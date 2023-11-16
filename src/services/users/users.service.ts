@@ -12,8 +12,6 @@ export class UsersService {
   ) {}
 
   async signup(user: User): Promise<User> {
-    user.id = genereUUID();
-    // user.role = 'user';
     return await this.userRepository.save(user);
   }
 }
