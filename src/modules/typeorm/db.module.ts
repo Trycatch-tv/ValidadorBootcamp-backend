@@ -12,7 +12,7 @@ import { DataSource } from 'typeorm';
       password: 'trycatch_tv23',
       database: 'validador_bootcamps',
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
     }),
   ],
   providers: [],

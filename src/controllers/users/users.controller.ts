@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { User } from 'src/models/user/user.entity';
+import { SignupDto } from 'src/dtos/users/signup.dto';
+import { SignupResponse } from 'src/responses/users/signup.response';
 import { UsersService } from 'src/services/users/users.service';
 
 @Controller()
@@ -15,7 +16,7 @@ export class UsersController {
   }
 
   @Post('signup')
-  async signup(@Body() user: User) {
-    return await this.usersService.signup(user);
+  async signup(@Body() signupDto: SignupDto): Promise<SignupResponse> {
+    return await this.usersService.signup(signupDto);
   }
 }
