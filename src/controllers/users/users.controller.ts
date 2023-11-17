@@ -16,12 +16,6 @@ export class UsersController {
 
   @Post('signup')
   async signup(@Body() user: User) {
-    const newUser = new User();
-    newUser.email = user.email;
-    newUser.first_name = user.first_name;
-    newUser.last_name = user.last_name;
-    newUser.password = user.password;
-
-    return await this.usersService.signup(newUser);
+    return await this.usersService.signup(user);
   }
 }

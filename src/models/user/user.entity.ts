@@ -1,10 +1,18 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { genereUUID } from 'src/utils/uuid/uuid.utils';
+import { Column, Entity, PrimaryColumn, BeforeInsert } from 'typeorm';
 
 @Entity('users')
 export class User {
-  constructor() {
-    this.role = 'user';
+  @BeforeInsert()
+  setDefaultRole() {
+    if (this.role === undefined || this.role === null || this.role === '') {
+      this.role = 'user';
+    }
+    if (this.id === undefined || this.id === null || this.id === '') {
+      this.id = genereUUID();
+    }
   }
+
   @PrimaryColumn({ unique: true })
   id: string;
 
@@ -17,7 +25,11 @@ export class User {
   @Column({ nullable: false })
   password: string;
 
-  @Column()
+  @Column({
+    nullable: false,
+    default: 'user',
+    enum: ['user', 'admin', 'bootcamp'],
+  })
   role: string;
 
   @Column({ unique: true, nullable: false })
