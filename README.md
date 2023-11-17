@@ -60,7 +60,7 @@ $ npm run test:cov
 
 ## TODO
 
-- [ ] Cambiar la configuración de TypeORM para utilizar un archivo de configuración .env
+- [ ] Verificar el problema con el EnvironmentConfigService en la configuración de TypeOrm
 
 ## Support
 
