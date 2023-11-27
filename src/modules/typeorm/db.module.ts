@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
 import { DataSource } from 'typeorm';
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { DataSource } from 'typeorm';
       },
     }),
   ],
-  providers: [ConfigModule],
+  providers: [ConfigModule, EnvironmentConfigService],
   exports: [],
 })
 export class DbModule {

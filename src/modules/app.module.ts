@@ -5,13 +5,14 @@ import { AppController } from '../controllers/app.controller';
 import { AppService } from '../services/app.service';
 import { DbModule } from './typeorm/db.module';
 import { UsersModule } from './users/users.module';
+import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
 
 @Module({
   imports: [
     DbModule,
     UsersModule,
     ConfigModule.forRoot({
-      envFilePath: ['.env.example'],
+      envFilePath: ['.env.develop'],
       isGlobal: true,
     }),
     RouterModule.register([
@@ -26,6 +27,6 @@ import { UsersModule } from './users/users.module';
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, UsersModule, EnvironmentConfigService],
 })
 export class AppModule {}

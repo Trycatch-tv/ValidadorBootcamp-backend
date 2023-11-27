@@ -18,6 +18,7 @@ export class UsersService {
     user.last_name = signupDto.last_name;
     user.email = signupDto.email;
     user.password = signupDto.password;
+    console.log(user);
 
     const newUser = await this.userRepository.save(user);
 
