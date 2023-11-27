@@ -10,7 +10,10 @@ import { UsersModule } from './users/users.module';
   imports: [
     DbModule,
     UsersModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: ['.env.develop'],
+      isGlobal: true,
+    }),
     RouterModule.register([
       {
         path: '',
