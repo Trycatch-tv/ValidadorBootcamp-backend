@@ -3,7 +3,7 @@ import { genereUUID } from 'src/utils/uuid/uuid.utils';
 import { BeforeInsert, Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('users')
-export class User {
+export class UserEntity {
   @BeforeInsert()
   async setDefaultRole() {
     if (this.role === undefined || this.role === null || this.role === '') {
@@ -24,18 +24,21 @@ export class User {
   @Column({ nullable: false })
   last_name: string;
 
+  @Column({ unique: true, nullable: false })
+  email: string;
+
   @Column({ nullable: false })
   password: string;
 
   @Column({
     nullable: false,
     default: 'user',
-    enum: ['user', 'admin', 'bootcamp'],
+    enum: ['user', 'admin', 'bootcamp', 'bootcamps', 'companies', 'experts'],
   })
   role: string;
 
-  @Column({ unique: true, nullable: false })
-  email: string;
+  @Column({ nullable: true })
+  file_id: string;
 
   @Column({ default: true })
   is_active: boolean;
@@ -53,4 +56,12 @@ export class User {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updated_at: Date;
+
+  // @OneToOne(() => FileEntity, (fileEntity) => fileEntity.file)
+  // file: FileEntity;
+
+  // @OneToOne(() => FileEntity)
+  // @JoinColumn({ name: 'user_id' })
+  @Column({ nullable: false })
+  avatar: string;
 }
