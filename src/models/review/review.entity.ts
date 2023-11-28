@@ -6,25 +6,39 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('files')
-export class FileEntity {
-  @PrimaryColumn({ unique: true })
+@Entity('reviews')
+export class ReviewEntity {
+  @PrimaryColumn()
   id: string;
 
   @Column({ nullable: false })
+  title: string;
+
+  @Column({ nullable: false })
+  score_overall: number;
+
+  @Column({ nullable: false })
+  score_curriculum: number;
+
+  @Column({ nullable: false })
+  score_job_support: number;
+
+  @Column({ nullable: false })
+  score: number;
+
+  @Column({ nullable: false })
+  description: string;
+
+  @Column({ nullable: false })
+  source: string;
+
+  // TODO: Pendiente ajustar segun las relaciones
+  @Column({ nullable: false })
   user_id: string;
 
+  // TODO: Pendiente ajustar segun las relaciones
   @Column({ nullable: false })
   bootcamp_id: string;
-
-  @Column({ nullable: false })
-  file_name: string;
-
-  @Column({ nullable: false })
-  file_type: string;
-
-  @Column({ nullable: false })
-  file_path: string;
 
   @Column({ nullable: false, default: true })
   is_active: boolean;

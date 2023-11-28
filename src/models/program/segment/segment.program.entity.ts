@@ -6,25 +6,27 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('files')
-export class FileEntity {
-  @PrimaryColumn({ unique: true })
+@Entity('segment_programs')
+export class SegmentProgramEntity {
+  @PrimaryColumn()
   id: string;
 
   @Column({ nullable: false })
+  name: string;
+
+  @Column({ nullable: false })
+  description: string;
+
+  @Column({ nullable: false })
+  duration: number;
+
+  // TODO: Pendiente ajustar segun las relaciones
+  @Column({ nullable: false })
+  program_id: string;
+
+  // TODO: Pendiente ajustar segun las relaciones
+  @Column({ nullable: false })
   user_id: string;
-
-  @Column({ nullable: false })
-  bootcamp_id: string;
-
-  @Column({ nullable: false })
-  file_name: string;
-
-  @Column({ nullable: false })
-  file_type: string;
-
-  @Column({ nullable: false })
-  file_path: string;
 
   @Column({ nullable: false, default: true })
   is_active: boolean;

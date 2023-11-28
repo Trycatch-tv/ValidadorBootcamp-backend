@@ -6,25 +6,35 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('files')
-export class FileEntity {
-  @PrimaryColumn({ unique: true })
+@Entity('pricing_programs')
+export class PricingProgramEntity {
+  @PrimaryColumn()
   id: string;
 
   @Column({ nullable: false })
+  name: string;
+
+  @Column({ nullable: false })
+  country_name: string;
+
+  @Column({ nullable: false })
+  country_iso: string;
+
+  @Column({ nullable: false })
+  city_name: string;
+
+  @Column({ nullable: false })
+  address: string;
+
+  @Column({ nullable: false })
+  email: string;
+
+  @Column({ nullable: false })
+  phone: string;
+
+  // TODO: Pendiente ajustar segun las relaciones
+  @Column({ nullable: false })
   user_id: string;
-
-  @Column({ nullable: false })
-  bootcamp_id: string;
-
-  @Column({ nullable: false })
-  file_name: string;
-
-  @Column({ nullable: false })
-  file_type: string;
-
-  @Column({ nullable: false })
-  file_path: string;
 
   @Column({ nullable: false, default: true })
   is_active: boolean;

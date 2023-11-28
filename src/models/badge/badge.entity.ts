@@ -6,25 +6,17 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('files')
-export class FileEntity {
-  @PrimaryColumn({ unique: true })
+@Entity('badges')
+export class BadgeEntity {
+  @PrimaryColumn()
   id: string;
 
+  // TODO: Pendiente ajustar segun las relaciones
   @Column({ nullable: false })
-  user_id: string;
+  file_id: string;
 
   @Column({ nullable: false })
-  bootcamp_id: string;
-
-  @Column({ nullable: false })
-  file_name: string;
-
-  @Column({ nullable: false })
-  file_type: string;
-
-  @Column({ nullable: false })
-  file_path: string;
+  name: string;
 
   @Column({ nullable: false, default: true })
   is_active: boolean;
