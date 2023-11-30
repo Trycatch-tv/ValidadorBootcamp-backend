@@ -1,0 +1,20 @@
+[
+    {
+        "author": "Juan Pérez",
+        "date": "2023-12-01",
+        "rating": "5",
+        "review": "El bootcamp es excelente. Los profesores son muy buenos y el contenido está muy bien explicado. Lo recomiendo 100%"
+    },
+    {
+        "author": "María López",
+        "date": "2023-12-02",
+        "rating": "4",
+        "review": "El bootcamp es muy completo. Aprendí mucho sobre desarrollo web. Sin embargo, creo que el contenido podría ser un poco más avanzado"
+    },
+    {
+        "author": "Carlos Rodríguez",
+        "date": "2023-12-03",
+        "rating": "3",
+        "review": "El bootcamp es bueno, pero creo que el precio es un poco elevado"
+    }
+]
