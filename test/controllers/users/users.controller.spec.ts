@@ -16,3 +16,5 @@ describe('UsersController', () => {
     expect(controller).toBeDefined();
   });
 });
+export { UsersController };
+

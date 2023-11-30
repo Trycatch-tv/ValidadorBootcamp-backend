@@ -4,6 +4,7 @@ import { BeforeInsert, Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
+  [x: string]: any;
   @BeforeInsert()
   async setDefaultRole() {
     if (this.role === undefined || this.role === null || this.role === '') {
