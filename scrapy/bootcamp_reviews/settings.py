@@ -5,4 +5,4 @@ NEWSPIDER_MODULE = "bootcamp_reviews"
 
 # Configuración de la URL de la página web desde la que se desea extraer los comentarios
 
-TARGET_URL = "https://Trycatch-tv/ValidadorBootcamp-backend"
+TARGET_URL = "https://www.rottentomatoes.com/m/ghostbusters/reviews?type=user"

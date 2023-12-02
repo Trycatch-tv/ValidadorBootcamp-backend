@@ -1,25 +1,25 @@
-import scrapy
+from scrapy import Request, Spider
 
-class BootcampReviewsSpider(scrapy.Spider):
+
+# Para ejecutar el spider desde la terminal: scrapy crawl bootcamp_reviews -o output.json
+class BootcampReviewsSpider(Spider):
     name = "bootcamp_reviews"
-
-    def start_requests(self):
-        url = self.settings.get("TARGET_URL")
-        yield scrapy.Request(url=url, callback=self.parse)
+    start_urls = [
+        "https://www.rottentomatoes.com/m/ghostbusters/reviews?type=user",
+    ]
 
     def parse(self, response):
-        for review in response.css(".review"):
-            item = BootcampReviewItem()
+        for comment in response.css(".audience-review-row"):
+            yield {
+                "author": comment.css(".audience-reviews__name::text").get(),
+                # "rating": comment.css(".Stars::text").get(),
+                "comment": comment.css(".audience-reviews__review.js-review-text::text").get(),
+            }
 
-            item["author"] = review.css(".author::text").get()
-            item["date"] = review.css(".date::text").get()
-            item["rating"] = review.css(".rating::text").get()
-            item["review"] = review.css(".review-text::text").get()
 
-            yield item
+if __name__ == "__main__":
+    from scrapy.crawler import CrawlerProcess
 
-class BootcampReviewItem(scrapy.Item):
-    author = scrapy.Field()
-    date = scrapy.Field()
-    rating = scrapy.Field()
-    review = scrapy.Field()
+    process = CrawlerProcess()
+    process.crawl(BootcampReviewsSpider)
+    process.start()
