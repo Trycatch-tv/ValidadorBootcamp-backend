@@ -29,4 +29,13 @@ export class UsersService {
     signupResponse.role = newUser.role;
     return signupResponse;
   }
+
+  // TODO: Pendiente agregar validación del usuario mediante token
+  async list(): Promise<User[]> {
+    try {
+      return await this.userRepository.findBy({ is_active: true });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
