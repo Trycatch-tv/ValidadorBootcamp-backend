@@ -26,7 +26,7 @@ export class UsersController {
 
   @ApiResponse({
     status: 200,
-    description: 'Returns a loged in user',
+    description: 'Returns a saved user',
     type: [SignupResponse]
   })
   @Post('signup')
@@ -52,6 +52,6 @@ export class UsersController {
   })
   @Get('list')
   async list(): Promise<SignupResponse[]> {
-    return await this.usersService.getUsers();
+    return await this.usersService.list();
   }
 }
