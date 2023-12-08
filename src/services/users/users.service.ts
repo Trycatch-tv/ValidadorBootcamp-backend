@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from 'src/dtos/users/signup.dto';
 import { User } from 'src/models/user/user.entity';
@@ -26,8 +26,41 @@ export class UsersService {
       signinResponse.id = newUser.id;
       signinResponse.email = newUser.email;
       signinResponse.role = newUser.role;
-      signinResponse.isLogedIn = await compareHash(user.password, newUser.password);
+      signinResponse.isLogedIn = await compareHash(
+        user.password,
+        newUser.password,
+      );
     } catch (error) {}
+    if (signinResponse.id == null) {
+      return null;
+    }
+    return signinResponse;
+  }
+
+  async findOneBy(signupDto: SignupDto): Promise<SigninResponse> {
+    const user = new User();
+    user.email = signupDto.email;
+    user.password = signupDto.password;
+    const signinResponse = new Object() as SigninResponse;
+    try {
+      const newUser = await this.userRepository.findOneByOrFail({
+        email: user.email,
+      });
+      signinResponse.id = newUser.id;
+      signinResponse.email = newUser.email;
+      signinResponse.role = newUser.role;
+      signinResponse.isLogedIn = await compareHash(
+        user.password,
+        newUser.password,
+      );
+    } catch (error) {
+      const msg = error.message;
+      throw new NotFoundException({
+        status: 404,
+        message: msg,
+      });
+    }
+
     return signinResponse;
   }
 

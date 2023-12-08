@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Post } from '@nestjs/common';
 import { SignupDto } from 'src/dtos/users/signup.dto';
 import { User } from 'src/models/user/user.entity';
 import { SignupResponse } from 'src/responses/users/signup.response';
@@ -17,7 +17,7 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'Returns an array of users',
-    type: [SignupResponse]
+    type: [SignupResponse],
   })
   @Get('/')
   getUsers(): Promise<SignupResponse[]> {
@@ -27,7 +27,7 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'Returns a saved user',
-    type: [SignupResponse]
+    type: [SignupResponse],
   })
   @Post('signup')
   async signup(@Body() signupDto: SignupDto): Promise<SignupResponse> {
@@ -40,15 +40,15 @@ export class UsersController {
     description: 'Sign in successful',
     type: SigninResponse,
   })
-  @Get('signin')
-  async signIn(@Body() signupDto: SignupDto): Promise<SigninResponse> {
-    return await this.usersService.signin(signupDto);
+  @Get('findUserByEmail')
+  async findUserByEmail(@Body() signupDto: SignupDto): Promise<SigninResponse> {
+    return await this.usersService.findOneBy(signupDto);  
   }
 
   @ApiResponse({
     status: 200,
     description: 'Returns an array of users',
-    type: [SignupResponse]
+    type: [SignupResponse],
   })
   @Get('list')
   async list(): Promise<SignupResponse[]> {
