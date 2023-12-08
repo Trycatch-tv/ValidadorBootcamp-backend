@@ -20,7 +20,7 @@ import { UsersModule } from './users/users.module';
         module: AppModule,
       },
       {
-        path: 'users',
+        path: '', //Si se pone el path de /users acá, no se puede poner el nombre en el controlador.
         module: UsersModule,
       },
     ]),
