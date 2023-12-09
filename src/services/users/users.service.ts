@@ -196,6 +196,34 @@ export class UsersService {
     return sR;
   }
 
+  private async deleteUser(user: User): Promise<SignupResponse> {
+    try {
+      const signupResponse = new Object() as SignupResponse;
+      const ret = await this.userRepository.update(
+        { id: user.id },
+        {
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          password: user.password,
+          role: user.role,
+          is_active: false,
+        },
+      );
+
+      if (ret.affected > 0) {
+        signupResponse.id = user.id;
+        signupResponse.first_name = user.first_name;
+        signupResponse.last_name = user.last_name;
+        signupResponse.email = user.email;
+        signupResponse.role = user.role;
+      }
+      return signupResponse;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   private async updateUser(user: User): Promise<SignupResponse> {
     try {
       const signupResponse = new Object() as SignupResponse;
