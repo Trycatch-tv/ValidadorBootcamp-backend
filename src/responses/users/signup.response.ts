@@ -9,6 +9,8 @@ export class SignupResponse {
   last_name: string;
   @ApiProperty({ example: "johndoe@example.com", description: 'User Email' })
   email: string;
-  @ApiProperty({ example: "user", description: 'User Role' })
+  @ApiProperty({ example: "Password123", description: 'User Password' })
+  password: string;
+  @ApiProperty({ example: "Admin", description: 'User Role' })
   role: string;
 }

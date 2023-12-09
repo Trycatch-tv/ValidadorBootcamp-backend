@@ -1,21 +1,22 @@
-import { generateHash } from 'src/utils/crypto/crypto.utils';
 import { genereUUID } from 'src/utils/uuid/uuid.utils';
-import { BeforeInsert, Column, Entity, PrimaryColumn } from 'typeorm';
+import { 
+  BeforeInsert, 
+  Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
   @BeforeInsert()
   async setDefaultRole() {
-    if (this.role === undefined || this.role === null || this.role === '') {
-      this.role = 'user';
-    }
     if (this.id === undefined || this.id === null || this.id === '') {
       this.id = genereUUID();
     }
-    this.password = await generateHash(this.password);
   }
 
-  @PrimaryColumn({ unique: true })
+  @PrimaryColumn({ 
+    unique: true,
+    nullable: false,
+    generated: 'uuid',
+  })
   id: string;
 
   @Column({ nullable: false })
