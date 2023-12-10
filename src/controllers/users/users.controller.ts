@@ -1,43 +1,40 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { SignupDto } from 'src/dtos/users/signup.dto';
 import { User } from 'src/models/user/user.entity';
 import { SignupResponse } from 'src/responses/users/signup.response';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { HttpStatus, Response } from '@nestjs/common';
-import { SignupService } from 'src/services/signup/signup.service';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SigninResponse } from 'src/responses/users/signin.response';
 import { UsersService } from 'src/services/users/users.service';
 
-export interface SignupDto {
-  name: string;
-  email: string;
-  password: string;
-  // Add the missing properties from the User interface
-  id: string;
-  role: string;
-  is_active: boolean;
-  // TODO: Add any other missing properties
-}
-
-interface SignupResponse {
-  // Existing properties
-  name: string;
-  email: string;
-  id: string;
-}
-
-@Controller()
+@ApiTags('Users')
+@Controller('users')
 export class UsersController {
-  constructor(
-    private readonly signupService: SignupService,
-    private readonly usersService: UsersService,
-  ) {}
+  
+  constructor(private readonly usersService: UsersService) {
+    this.usersService = usersService;
+  }
 
+  @ApiResponse({
+    status: 200,
+    description: 'Returns an array of users',
+    type: [SignupResponse]
+  })
   @Get('/')
   healthCheck(): string {
     return 'ok';
+  getUsers(): Promise<SignupResponse[]> {
+    return this.usersService.getUsers();
   }
-
+  
+  @ApiBody({ type: SignupDto })
+  @ApiResponse({
+    status: 200,
+    description: 'User created',
+    type: SignupResponse,
+  })
   @Post('signup')
+<<<<<<< HEAD
 async signup(@Body() signupDto: SignupDto, @Response() res: Response): Promise<any> {
   try {
     const user: User = {
@@ -71,6 +68,21 @@ async signup(@Body() signupDto: SignupDto, @Response() res: Response): Promise<a
   @Get('list')
   async list(): Promise<User[]> {
     return await this.usersService.list();
+=======
+  async signUp(@Body() signupDto: SignupDto): Promise<SignupResponse> {
+    return await this.usersService.signup(signupDto);
+>>>>>>> Apitoriadev/BE-Swagger-Users-SignIn
+  }
+
+  @ApiBody({ type: SignupDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Sign in successful',
+    type: SigninResponse,
+  })
+  @Get('signin')
+  async signIn(@Body() signupDto: SignupDto): Promise<SigninResponse> {
+    return await this.usersService.signin(signupDto);
   }
 }
 =======
