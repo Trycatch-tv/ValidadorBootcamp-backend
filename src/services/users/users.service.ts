@@ -12,29 +12,32 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
+  @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
 
   async signup(signupDto: SignupDto): Promise<SignupResponse> {
     const user = new User();
-    user.first_name = signupDto.first_name;
-    user.last_name = signupDto.last_name;
+    user.firstName = signupDto.firstName; // Coincidencias SignupDto
+    user.lastName = signupDto.lastName; // Coincidencias SignupDto
     user.email = signupDto.email;
     user.password = signupDto.password;
 
-    const newUser = await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
 
-    const signupResponse = new Object() as SignupResponse;
-    signupResponse.id = newUser.id;
-    signupResponse.first_name = newUser.first_name;
-    signupResponse.last_name = newUser.last_name;
-    signupResponse.email = newUser.email;
-    signupResponse.role = newUser.role;
-    return signupResponse;
+    const response: SignupResponse = {
+      id: savedUser.id,
+      firstName: savedUser.firstName, // Coincidencias SignupDto
+      lastName: savedUser.lastName, // Coincidencias SignupDto
+      email: savedUser.email,
+      role: savedUser.role,
+    };
+
+    return response;
   }
 
-  // TODO: Pendiente agregar validación del usuario mediante token
+  // TODO: Implementar la validación del usuario usando un token.
+
   async list(): Promise<User[]> {
     try {
       return await this.userRepository.findBy({ is_active: true });
@@ -71,5 +74,21 @@ export class UsersService {
       response.push(signupResponse);
     });
     return response;
+    // Usa un objeto de proyección para seleccionar datos de usuario específicos
+    // Esto protege la información confidencial y cumple con las pautas de seguridad
+    const projection = {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
+    };
+
+    return await this.userRepository.find({
+      select: projection,
+      where: { isActive: true },
+    });
   }
 }
