@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from 'src/dtos/users/signup.dto';
-import { User } from 'src/models/user/user.entity';
+import { UserEntity } from 'src/models/user/user.entity';
 import { SigninResponse } from 'src/responses/users/signin.response';
 import { SignupResponse } from 'src/responses/users/signup.response';
 import { compareHash } from 'src/utils/crypto/crypto.utils';
@@ -12,14 +12,14 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class UsersService {
   constructor(
-  @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async signup(signupDto: SignupDto): Promise<SignupResponse> {
-    const user = new User();
-    user.firstName = signupDto.firstName; // Coincidencias SignupDto
-    user.lastName = signupDto.lastName; // Coincidencias SignupDto
+    const user = new UserEntity();
+    user.first_name = signupDto.first_name;
+    user.last_name = signupDto.last_name;
     user.email = signupDto.email;
     user.password = signupDto.password;
 

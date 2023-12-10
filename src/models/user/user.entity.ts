@@ -1,9 +1,19 @@
 import { generateHash } from 'src/utils/crypto/crypto.utils';
 import { genereUUID } from 'src/utils/uuid/uuid.utils';
-import { BeforeInsert, Column, Entity, PrimaryColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { FileEntity } from '../file/file.entity';
 
 @Entity('users')
-export class User {
+export class UserEntity {
   [x: string]: any;
   @BeforeInsert()
   async setDefaultRole() {
@@ -25,33 +35,40 @@ export class User {
   @Column({ nullable: false })
   last_name: string;
 
+  @Column({ unique: true, nullable: false })
+  email: string;
+
   @Column({ nullable: false })
   password: string;
 
   @Column({
     nullable: false,
     default: 'user',
-    enum: ['user', 'admin', 'bootcamp'],
+    enum: ['user', 'admin', 'bootcamp', 'bootcamps', 'companies', 'experts'],
   })
   role: string;
-
-  @Column({ unique: true, nullable: false })
-  email: string;
 
   @Column({ default: true })
   is_active: boolean;
 
-  @Column({
-    nullable: true,
+  @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
+    name: 'created_at',
   })
   created_at: Date;
 
-  @Column({
-    nullable: true,
+  @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+    name: 'updated_at',
   })
   updated_at: Date;
+
+  @OneToOne(() => FileEntity, (file) => file.user_id, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'file_id' })
+  avatar: FileEntity;
 }
