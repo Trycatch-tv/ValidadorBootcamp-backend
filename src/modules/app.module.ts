@@ -20,7 +20,7 @@ import { UsersModule } from './users/users.module';
         module: AppModule,
       },
       {
-        path: 'users',
+        path: '',
         module: UsersModule,
       },
     ]),
