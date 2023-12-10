@@ -5,7 +5,7 @@ import { defineAuth } from '@aws-amplify/backend';
  * When used alongside data, it is automatically configured as an auth provider for data
  * @see https://docs.amplify.aws/gen2/build-a-backend/auth
  */
-export const auth = defineAuth({
+export const auth: any = defineAuth({
   loginWith: {
     email: true,
     // add social providers

@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@aws-amplify/backend": "^0.5.5",
+    "@aws-amplify/cli": "^12.8.2",
     "@babel/core": "^7.23.5",
     "@babel/preset-env": "^7.23.5",
     "@babel/preset-typescript": "^7.23.3",

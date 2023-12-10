@@ -8,7 +8,6 @@ import { SignupResponse } from 'src/responses/users/signup.response';
 import { compareHash } from 'src/utils/crypto/crypto.utils';
 import { Repository } from 'typeorm';
 
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -27,8 +26,8 @@ export class UsersService {
 
     const response: SignupResponse = {
       id: savedUser.id,
-      firstName: savedUser.firstName, // Coincidencias SignupDto
-      lastName: savedUser.lastName, // Coincidencias SignupDto
+      first_name: savedUser.first_name,
+      last_name: savedUser.last_name,
       email: savedUser.email,
       role: savedUser.role,
     };
@@ -37,15 +36,16 @@ export class UsersService {
   }
 
   // TODO: Implementar la validación del usuario usando un token.
-
-  async list(): Promise<User[]> {
+  async list(): Promise<UserEntity[]> {
     try {
       return await this.userRepository.findBy({ is_active: true });
     } catch (error) {
       throw error;
     }
+  }
+
   async signin(signupDto: SignupDto): Promise<SigninResponse> {
-    const user = new User();
+    const user = new UserEntity();
     user.email = signupDto.email;
     user.password = signupDto.password;
     const signinResponse = new Object() as SigninResponse;
@@ -56,24 +56,15 @@ export class UsersService {
       signinResponse.id = newUser.id;
       signinResponse.email = newUser.email;
       signinResponse.role = newUser.role;
-      signinResponse.isLogedIn = await compareHash(user.password, newUser.password);
+      signinResponse.isLogedIn = await compareHash(
+        user.password,
+        newUser.password,
+      );
     } catch (error) {}
     return signinResponse;
   }
 
   async getUsers(): Promise<SignupResponse[]> {
-    const users = await this.userRepository.find();
-    const response = new Array<SignupResponse>();
-    users.forEach((user) => {
-      const signupResponse = new Object() as SignupResponse;
-      signupResponse.id = user.id;
-      signupResponse.first_name = user.first_name;
-      signupResponse.last_name = user.last_name;
-      signupResponse.email = user.email;
-      signupResponse.role = user.role;
-      response.push(signupResponse);
-    });
-    return response;
     // Usa un objeto de proyección para seleccionar datos de usuario específicos
     // Esto protege la información confidencial y cumple con las pautas de seguridad
     const projection = {
@@ -85,10 +76,20 @@ export class UsersService {
       createdAt: true,
       updatedAt: true,
     };
-
-    return await this.userRepository.find({
+    const users = await this.userRepository.find({
       select: projection,
       where: { isActive: true },
     });
+    const response = new Array<SignupResponse>();
+    users.forEach((user) => {
+      const signupResponse = new Object() as SignupResponse;
+      signupResponse.id = user.id;
+      signupResponse.first_name = user.first_name;
+      signupResponse.last_name = user.last_name;
+      signupResponse.email = user.email;
+      signupResponse.role = user.role;
+      response.push(signupResponse);
+    });
+    return response;
   }
 }

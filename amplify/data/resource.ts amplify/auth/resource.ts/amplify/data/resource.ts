@@ -17,7 +17,7 @@ const schema: any = a.schema({
 
 export type Schema = ClientSchema<typeof schema>;
 
-export const data = defineData({
+export const data: any = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: 'apiKey',

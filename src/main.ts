@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './modules/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
-    .addBasicAuth()//TODO: addBasicAuthOptions
-    .addBearerAuth()//TODO: addBearerAuthOptions
+    .addBasicAuth() //TODO: addBasicAuthOptions
+    .addBearerAuth() //TODO: addBearerAuthOptions
     .setTitle('GlassCamp')
     .setDescription('Validador de bootcamps')
     .setVersion('1.0')
