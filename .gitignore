@@ -43,3 +43,5 @@ scrapy/*
 !scrapy/bootcamp_reviews
 
 !scrapy/bootcamp_reviews.json
+.env.develop
+.env.example
