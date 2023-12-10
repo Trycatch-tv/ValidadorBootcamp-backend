@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:14.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=validador_bootcamps
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=trycatch_tv23
+    ports:
+      - 5432:5432

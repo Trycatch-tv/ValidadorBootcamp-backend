@@ -33,3 +33,15 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+.env
+
+pycache
+
+scrapy/*
+
+!scrapy/bootcamp_reviews
+
+!scrapy/bootcamp_reviews.json
+.env.develop
+.env.example
