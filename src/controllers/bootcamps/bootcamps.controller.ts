@@ -22,7 +22,7 @@ export class BootcampsController {
   })
   @Get('list')
   async list(): Promise<GetBootcampsResponse[]> {
-    return await this.bootcampsService.list();
+    return await this.bootcampsService.getBootcamps();
   }
 
 }
