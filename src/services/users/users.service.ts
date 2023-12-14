@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto } from 'src/dtos/users/signup.dto';
 import { UserEntity } from 'src/models/user/user.entity';
-import { SigninResponse } from 'src/responses/users/signin.response';
 import { SignupResponse } from 'src/responses/users/signup.response';
 import { compareHash } from 'src/utils/crypto/crypto.utils';
 import { Repository } from 'typeorm';
@@ -44,52 +43,48 @@ export class UsersService {
     }
   }
 
-  async signin(signupDto: SignupDto): Promise<SigninResponse> {
-    const user = new UserEntity();
-    user.email = signupDto.email;
-    user.password = signupDto.password;
-    const signinResponse = new Object() as SigninResponse;
+  async signin(user: Partial<UserEntity>): Promise<UserEntity> {
     try {
       const newUser = await this.userRepository.findOneByOrFail({
         email: user.email,
       });
-      signinResponse.id = newUser.id;
-      signinResponse.email = newUser.email;
-      signinResponse.role = newUser.role;
-      signinResponse.isLogedIn = await compareHash(
-        user.password,
-        newUser.password,
-      );
-    } catch (error) {}
-    return signinResponse;
+      newUser.isLogedIn = await compareHash(user.password, newUser.password);
+      delete newUser.password;
+      delete newUser.created_at;
+      delete newUser.updated_at;
+      return newUser;
+    } catch (error) {
+      throw Error('Error al iniciar sesión');
+    }
   }
 
-  async getUsers(): Promise<SignupResponse[]> {
+  async getUsers(): Promise<UserEntity[]> {
     // Usa un objeto de proyección para seleccionar datos de usuario específicos
     // Esto protege la información confidencial y cumple con las pautas de seguridad
     const projection = {
       id: true,
-      firstName: true,
-      lastName: true,
+      first_name: true,
+      last_name: true,
       email: true,
       role: true,
-      createdAt: true,
-      updatedAt: true,
+      is_active: true,
+      created_at: true,
+      updated_at: true,
     };
     const users = await this.userRepository.find({
       select: projection,
-      where: { isActive: true },
+      where: { is_active: true },
     });
-    const response = new Array<SignupResponse>();
-    users.forEach((user) => {
-      const signupResponse = new Object() as SignupResponse;
-      signupResponse.id = user.id;
-      signupResponse.first_name = user.first_name;
-      signupResponse.last_name = user.last_name;
-      signupResponse.email = user.email;
-      signupResponse.role = user.role;
-      response.push(signupResponse);
-    });
-    return response;
+    // const response = new Array<GetUsersResponse>();
+    // users.forEach((user) => {
+    //   const signupResponse = new Object() as GetUsersResponse;
+    //   signupResponse.id = user.id;
+    //   signupResponse.first_name = user.first_name;
+    //   signupResponse.last_name = user.last_name;
+    //   signupResponse.email = user.email;
+    //   signupResponse.role = user.role;
+    //   response.push(signupResponse);
+    // });
+    return users;
   }
 }

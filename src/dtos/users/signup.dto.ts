@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class SignupDto {
   [x: string]: any;
-  id: string;
   @ApiProperty({ example: 'John', description: 'User Name' })
   first_name: string;
   @ApiProperty({ example: 'Doe', description: 'User Last Name' })

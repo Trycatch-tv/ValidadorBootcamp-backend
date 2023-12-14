@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SigninDto } from 'src/dtos/users/signin.dto';
 import { SignupDto } from 'src/dtos/users/signup.dto';
-import { UserEntity } from 'src/models/user/user.entity';
+import { GetUsersResponse } from 'src/responses/users/getusers.response';
 import { SigninResponse } from 'src/responses/users/signin.response';
 import { SignupResponse } from 'src/responses/users/signup.response';
 import { UsersService } from 'src/services/users/users.service';
@@ -13,6 +14,11 @@ export class UsersController {
     this.usersService = usersService;
   }
 
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the users service status',
+    type: [String],
+  })
   @Get('/')
   healthCheck(): string {
     return 'ok';
@@ -21,10 +27,11 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'Returns an array of users',
-    type: [SignupResponse],
+    type: [GetUsersResponse],
   })
-  getUsers(): Promise<SignupResponse[]> {
-    return this.usersService.getUsers();
+  @Get('list')
+  async getUsers(): Promise<GetUsersResponse[]> {
+    return await this.usersService.getUsers();
   }
 
   @ApiBody({ type: SignupDto })
@@ -34,35 +41,22 @@ export class UsersController {
     type: SignupResponse,
   })
   @Post('signup')
-  async signup(
-    @Body() signupDto: SignupDto,
-    // @Response() res: Response,
-  ): Promise<any> {
+  async signup(@Body() signupDto: SignupDto): Promise<SignupResponse> {
     try {
-      const signUpResponse = await this.usersService.signup(signupDto);
-      return signUpResponse;
-      // return res.status(Number(HttpStatus.CREATED)).send(signUpResponse);
+      return await this.usersService.signup(signupDto);
     } catch (error) {
-      // return res
-      //   .status(Number(HttpStatus.BAD_REQUEST))
-      //   .send({ errors: error.errors });
+      return error;
     }
   }
 
-  // Obtenga una lista de usuarios que utilizan UsersService con consideraciones de seguridad
-  @Get('list')
-  async list(): Promise<UserEntity[]> {
-    return await this.usersService.list();
-  }
-
-  @ApiBody({ type: SignupDto })
+  @ApiBody({ type: SigninDto })
   @ApiResponse({
     status: 200,
     description: 'Sign in successful',
     type: SigninResponse,
   })
-  @Get('signin')
-  async signIn(@Body() signupDto: SignupDto): Promise<SigninResponse> {
-    return await this.usersService.signin(signupDto);
+  @Post('signin')
+  async signIn(@Body() signinDto: SigninDto): Promise<SigninResponse> {
+    return await this.usersService.signin(signinDto);
   }
 }
