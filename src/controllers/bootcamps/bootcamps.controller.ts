@@ -1,7 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity'; 
-import { ListBootcampsResponse } from 'src/responses/bootcamps/list.response';
+import { GetBootcampsResponse } from 'src/responses/bootcamps/getbootcamps.response';
 import { BootcampsService } from 'src/services/bootcamps/bootcamps.service'; 
 
 @ApiTags('Bootcamps')
@@ -19,10 +18,10 @@ export class BootcampsController {
   @ApiResponse({
     status: 200,
     description: 'Returns an array of bootcamps',
-    type: [ListBootcampsResponse],
+    type: [GetBootcampsResponse],
   })
   @Get('list')
-  async list(): Promise<BootcampEntity[]> {
+  async list(): Promise<GetBootcampsResponse[]> {
     return await this.bootcampsService.list();
   }
 
