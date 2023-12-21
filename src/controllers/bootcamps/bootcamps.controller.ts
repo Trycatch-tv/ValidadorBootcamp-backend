@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetBootcampsResponse } from 'src/responses/bootcamps/getbootcamps.response';
-import { BootcampsService } from 'src/services/bootcamps/bootcamps.service'; 
+import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
 
 @ApiTags('Bootcamps')
 @Controller('bootcamps')
@@ -24,5 +24,4 @@ export class BootcampsController {
   async list(): Promise<GetBootcampsResponse[]> {
     return await this.bootcampsService.getBootcamps();
   }
-
 }
