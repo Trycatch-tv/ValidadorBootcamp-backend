@@ -1,5 +1,5 @@
 // import { passwordHelper } from './../../utils/crypto/crypto.utils';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/models/user/user.entity';
 import { compareHash } from 'src/utils/crypto/crypto.utils';
@@ -12,17 +12,41 @@ export class UsersService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async signup(user: Partial<UserEntity>): Promise<UserEntity> {
+  async findAll(): Promise<UserEntity[]> {
     try {
-      return await this.userRepository.save(user);
+      const users = (
+        await this.userRepository.find({
+          where: { is_active: true },
+        })
+      ).map((user) => {
+        delete user.password;
+        delete user.isLogedIn;
+        return user;
+      });
+      if (!users.length)
+        throw new HttpException('No hay usuarios', HttpStatus.NOT_FOUND);
+      return users;
     } catch (error) {
       throw error;
     }
   }
 
-  async list(): Promise<UserEntity[]> {
+  async findOne(id: string): Promise<UserEntity> {
     try {
-      return await this.userRepository.findBy({ is_active: true });
+      const user = await this.userRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+      delete user.password;
+      delete user.isLogedIn;
+      return user;
+    } catch (error) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async signup(user: Partial<UserEntity>): Promise<UserEntity> {
+    try {
+      return await this.userRepository.save(user);
     } catch (error) {
       throw error;
     }
@@ -40,23 +64,6 @@ export class UsersService {
       return newUser;
     } catch (error) {
       throw Error('Error al iniciar sesión');
-    }
-  }
-
-  async getUsers(): Promise<UserEntity[]> {
-    try {
-      const users = (
-        await this.userRepository.find({
-          where: { is_active: true },
-        })
-      ).map((user) => {
-        delete user.password;
-        delete user.isLogedIn;
-        return user;
-      });
-      return users;
-    } catch (error) {
-      throw error;
     }
   }
 }

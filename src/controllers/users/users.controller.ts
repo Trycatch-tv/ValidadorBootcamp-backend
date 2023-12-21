@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SigninDto } from 'src/dtos/users/signin.dto';
 import { SignupDto } from 'src/dtos/users/signup.dto';
-import { GetUsersResponse } from 'src/responses/users/getusers.response';
+import { FindOneUserResponse } from 'src/responses/users/findOneUser.response';
+import { FindAllUsersResponse } from 'src/responses/users/getusers.response';
 import { SigninResponse } from 'src/responses/users/signin.response';
 import { SignupResponse } from 'src/responses/users/signup.response';
 import { UsersService } from 'src/services/users/users.service';
@@ -27,11 +35,23 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description: 'Returns an array of users',
-    type: [GetUsersResponse],
+    type: [FindAllUsersResponse],
   })
   @Get('list')
-  async getUsers(): Promise<GetUsersResponse[]> {
-    return await this.usersService.getUsers();
+  async findAll(): Promise<FindAllUsersResponse[]> {
+    return await this.usersService.findAll();
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a user by id',
+    type: [FindOneUserResponse],
+  })
+  @Get(':id')
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<FindOneUserResponse> {
+    return await this.usersService.findOne(id);
   }
 
   @ApiBody({ type: SignupDto })
