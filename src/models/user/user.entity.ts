@@ -51,6 +51,8 @@ export class UserEntity {
   @Column({ default: true })
   is_active: boolean;
 
+  is_loged_in?: boolean;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
