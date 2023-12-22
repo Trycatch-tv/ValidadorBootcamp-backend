@@ -44,6 +44,35 @@ export class UsersService {
     }
   }
 
+  async removeOne(id: string): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+      user.is_active = false;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async updateOne(id: string, user: Partial<UserEntity>): Promise<UserEntity> {
+    try {
+      const userToUpdate = await this.userRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+      const updatedUser = await this.userRepository.save({
+        ...userToUpdate,
+        ...user,
+      });
+      delete updatedUser.password;
+      delete updatedUser.isLogedIn;
+      return updatedUser;
+    } catch (error) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+  }
+
   async signup(user: Partial<UserEntity>): Promise<UserEntity> {
     try {
       return await this.userRepository.save(user);
