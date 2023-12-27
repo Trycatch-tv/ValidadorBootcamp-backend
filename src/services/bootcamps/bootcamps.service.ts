@@ -1,5 +1,5 @@
 // import { passwordHelper } from './../../utils/crypto/crypto.utils';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
@@ -10,7 +10,7 @@ export class BootcampsService {
   constructor(
     @InjectRepository(BootcampEntity)
     private bootcampRepository: Repository<BootcampEntity>,
-  ) {}
+  ) { }
 
   async getBootcamps(): Promise<BootcampEntity[]> {
     try {
@@ -27,5 +27,10 @@ export class BootcampsService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async createOne(bootcamp: Partial<BootcampEntity>): Promise<BootcampEntity> {
+    const newBootcamp = this.bootcampRepository.create(bootcamp);
+    return await this.bootcampRepository.save(newBootcamp);
   }
 }
