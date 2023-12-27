@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/models/user/user.entity';
 import { compareHash } from 'src/utils/crypto/crypto.utils';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -73,9 +73,37 @@ export class UsersService {
     }
   }
 
+  async createOne(user: Partial<UserEntity>): Promise<UserEntity> {
+    try {
+      user.password = Math.random().toString(36).substring(2);
+      const newUser = this.userRepository.create(user);
+      return await this.userRepository.save(newUser);
+    } catch (error) {
+      throw new HttpException('Error al crear usuario', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async search(key: string): Promise<UserEntity[]> {
+    try {
+      const users = await this.userRepository.find({
+        where: [
+          { first_name: ILike(`%${key}%`), is_active: true },
+          { last_name: ILike(`%${key}%`), is_active: true },
+          { email: ILike(`%${key}%`), is_active: true },
+        ],
+      });
+      if (!users.length)
+        throw new HttpException('No hay usuarios', HttpStatus.NOT_FOUND);
+      return users;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async signup(user: Partial<UserEntity>): Promise<UserEntity> {
     try {
-      return await this.userRepository.save(user);
+      const newUser = this.userRepository.create(user);
+      return await this.userRepository.save(newUser);
     } catch (error) {
       throw error;
     }

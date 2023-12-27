@@ -20,13 +20,10 @@ export class UserEntity {
     if (this.role === undefined || this.role === null || this.role === '') {
       this.role = 'user';
     }
-    if (this.id === undefined || this.id === null || this.id === '') {
-      this.id = genereUUID();
-    }
     this.password = await generateHash(this.password);
   }
 
-  @PrimaryColumn({ unique: true })
+  @PrimaryColumn({ unique: true, default: genereUUID() })
   id: string;
 
   @Column({ nullable: false })
