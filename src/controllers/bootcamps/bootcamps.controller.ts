@@ -1,5 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common'; import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
+import { CreateOneBootcampResponse } from 'src/responses/bootcamps/createOneBootcamp.response';
 import { GetBootcampsResponse } from 'src/responses/bootcamps/getbootcamps.response';
 import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
 
@@ -21,7 +29,23 @@ export class BootcampsController {
     type: [GetBootcampsResponse],
   })
   @Get('list')
-  async list(): Promise<GetBootcampsResponse[]> {
+  async list(): Promise<any[]> {
     return await this.bootcampsService.getBootcamps();
+  }
+
+  @ApiBody({ type: CreateBootcampDto })
+  @ApiResponse({
+    status: 200,
+    description: 'User created by admin',
+    type: [CreateOneBootcampResponse],
+
+  })
+  @Post('create')
+  async createOne(@Body() body: CreateBootcampDto): Promise<CreateOneBootcampResponse> {
+    try {
+      return await this.bootcampsService.createOne(body);
+    } catch (error) {
+      throw new HttpException('Error al crear bootcamp', HttpStatus.BAD_REQUEST);
+    }
   }
 }
