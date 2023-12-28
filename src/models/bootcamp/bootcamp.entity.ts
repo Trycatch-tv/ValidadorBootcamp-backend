@@ -1,3 +1,4 @@
+import { genereUUID } from 'src/utils/uuid/uuid.utils';
 import {
   Column,
   CreateDateColumn,
@@ -8,7 +9,7 @@ import {
 
 @Entity('bootcamps')
 export class BootcampEntity {
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true, default: genereUUID() })
   id: string;
 
   @Column({ nullable: false })
@@ -30,7 +31,7 @@ export class BootcampEntity {
   is_endorsed: boolean;
 
   @Column({ nullable: true })
-  endorsedBy: string;
+  endorsed_by: string;
 
   @Column({ nullable: false, default: false })
   is_verified: boolean;
@@ -47,7 +48,7 @@ export class BootcampEntity {
   @Column({ nullable: false, enum: ['virtual', 'presencial', 'hibrido'] })
   mode: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   email: string;
 
   @Column({ nullable: false })
