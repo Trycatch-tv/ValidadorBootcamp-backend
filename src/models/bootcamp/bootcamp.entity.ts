@@ -48,7 +48,7 @@ export class BootcampEntity {
   @Column({ nullable: false, enum: ['virtual', 'presencial', 'hibrido'] })
   mode: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   email: string;
 
   @Column({ nullable: false })

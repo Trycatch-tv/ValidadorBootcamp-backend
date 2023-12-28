@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateBootcampDto {
+export class UpdateOneBootcampResponse {
   @ApiProperty({
     example: 'free camp code',
     description: 'Bootcamp name',
@@ -61,7 +61,7 @@ export class CreateBootcampDto {
   country_name: string;
 
   @ApiProperty({
-    example: 'CO',
+    example: '170',
     description: 'bootcamp country iso',
     required: true,
   })

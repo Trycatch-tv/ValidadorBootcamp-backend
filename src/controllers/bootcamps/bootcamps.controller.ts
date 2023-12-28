@@ -4,11 +4,19 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
+  ParseUUIDPipe,
   Post,
-} from '@nestjs/common'; import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+  Put,
+} from '@nestjs/common';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
+import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
 import { CreateOneBootcampResponse } from 'src/responses/bootcamps/createOneBootcamp.response';
-import { GetBootcampsResponse } from 'src/responses/bootcamps/getbootcamps.response';
+import { findAllBootcampsResponse } from 'src/responses/bootcamps/findAllBootcamp.response';
+import { findOneBootcampsResponse } from 'src/responses/bootcamps/findOneBootcamp.response';
+import { SearchBootcampsResponse } from 'src/responses/bootcamps/searchBootcamp.response';
+import { UpdateOneBootcampResponse } from 'src/responses/bootcamps/updateOneBootcamp.response';
 import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
 
 @ApiTags('Bootcamps')
@@ -26,26 +34,85 @@ export class BootcampsController {
   @ApiResponse({
     status: 200,
     description: 'Returns an array of bootcamps',
-    type: [GetBootcampsResponse],
+    type: [findAllBootcampsResponse],
   })
   @Get('list')
-  async list(): Promise<any[]> {
-    return await this.bootcampsService.getBootcamps();
+  async findAll(): Promise<findAllBootcampsResponse[]> {
+    return await this.bootcampsService.findAll();
   }
 
   @ApiBody({ type: CreateBootcampDto })
   @ApiResponse({
     status: 200,
-    description: 'User created by admin',
+    description: 'Bootcamp created by admin',
     type: [CreateOneBootcampResponse],
-
   })
   @Post('create')
-  async createOne(@Body() body: CreateBootcampDto): Promise<CreateOneBootcampResponse> {
+  async createOne(
+    @Body() body: CreateBootcampDto,
+  ): Promise<CreateOneBootcampResponse> {
     try {
       return await this.bootcampsService.createOne(body);
     } catch (error) {
-      throw new HttpException('Error al crear bootcamp', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Error al crear bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a bootcamp by id',
+    type: [findOneBootcampsResponse],
+  })
+  @Get('/:id')
+  async findOne(id: string): Promise<findOneBootcampsResponse> {
+    try {
+      return await this.bootcampsService.findOne(id);
+    } catch (error) {
+      throw new HttpException(
+        'Error al buscar bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiBody({ type: CreateBootcampDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a bootcamp updated by id',
+    type: [UpdateOneBootcampResponse],
+  })
+  @Put('update/:id')
+  async updateOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() bootcamp: Partial<UpdateBootcampDto>,
+  ): Promise<UpdateOneBootcampResponse> {
+    try {
+      return await this.bootcampsService.updateOne(id, bootcamp);
+    } catch (error) {
+      throw new HttpException(
+        'Error al actualizar bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a bootcamp searched by key',
+    type: [SearchBootcampsResponse],
+  })
+  @Get('search/:key')
+  async search(@Param('key') key: string): Promise<SearchBootcampsResponse[]> {
+    try {
+      return await this.bootcampsService.search(key);
+    } catch (error) {
+      throw new HttpException(
+        'Error al buscar bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }

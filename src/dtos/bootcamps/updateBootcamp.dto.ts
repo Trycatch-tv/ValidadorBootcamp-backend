@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateBootcampDto {
+export class UpdateBootcampDto {
   @ApiProperty({
     example: 'free camp code',
     description: 'Bootcamp name',
@@ -13,25 +13,25 @@ export class CreateBootcampDto {
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     description: 'bootcamp description',
   })
-  description?: string;
+  description: string;
 
   @ApiProperty({
     example: 'freecodecamp.com',
     description: 'bootcamp webside',
   })
-  url?: string;
+  url: string;
 
   @ApiProperty({
     example: 'https://www.facebook.com/freecodecamp',
     description: 'bootcamp facebook page',
   })
-  facebook_url?: string;
+  facebook_url: string;
 
   @ApiProperty({
     example: 'https://www.instagram.com/freecodecamp',
     description: 'bootcamp instagram page',
   })
-  instragram_url?: string;
+  instragram_url: string;
 
   @ApiProperty({
     example: true,
@@ -44,14 +44,7 @@ export class CreateBootcampDto {
     example: 'ITM',
     description: 'bootcamp endorsed by some organization',
   })
-  endorsed_by?: string;
-
-  @ApiProperty({
-    example: false,
-    description: 'bootcamp is verified',
-    default: false,
-  })
-  is_verified: boolean;
+  endorsed_by: string;
 
   @ApiProperty({
     example: 'colombia',
@@ -88,11 +81,4 @@ export class CreateBootcampDto {
     required: true,
   })
   phone: string;
-
-  @ApiProperty({
-    example: '12121212121212',
-    description: 'user to lasted update',
-    required: true,
-  })
-  user_id: string;
 }
