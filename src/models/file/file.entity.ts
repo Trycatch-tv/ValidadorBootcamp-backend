@@ -1,3 +1,4 @@
+import { genereUUID } from 'src/utils/uuid/uuid.utils';
 import {
   Column,
   CreateDateColumn,
@@ -8,23 +9,17 @@ import {
 
 @Entity('files')
 export class FileEntity {
-  @PrimaryColumn({ unique: true })
+  @PrimaryColumn({ unique: true, default: genereUUID() })
   id: string;
 
   @Column({ nullable: false })
-  user_id: string;
+  name: string;
+
+  @Column({ nullable: false, type: 'bytea' })
+  blob: Buffer;
 
   @Column({ nullable: false })
-  bootcamp_id: string;
-
-  @Column({ nullable: false })
-  file_name: string;
-
-  @Column({ nullable: false })
-  file_type: string;
-
-  @Column({ nullable: false })
-  file_path: string;
+  mimetype: string;
 
   @Column({ nullable: false, default: true })
   is_active: boolean;

@@ -5,12 +5,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { FileEntity } from '../file/file.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -65,9 +62,9 @@ export class UserEntity {
   })
   updated_at: Date;
 
-  @OneToOne(() => FileEntity, (file) => file.user_id, {
-    nullable: true,
-  })
-  @JoinColumn({ name: 'file_id' })
-  avatar: FileEntity;
+  // @OneToOne(() => FileEntity, (file) => file.user_id, {
+  //   nullable: true,
+  // })
+  // @JoinColumn({ name: 'file_id' })
+  // avatar: FileEntity;
 }
