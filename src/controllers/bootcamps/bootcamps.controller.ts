@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -14,7 +15,8 @@ import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
 import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
 import { CreateOneBootcampResponse } from 'src/responses/bootcamps/createOneBootcamp.response';
 import { findAllBootcampsResponse } from 'src/responses/bootcamps/findAllBootcamp.response';
-import { findOneBootcampsResponse } from 'src/responses/bootcamps/findOneBootcamp.response';
+import { FindOneBootcampsResponse } from 'src/responses/bootcamps/findOneBootcamp.response';
+import { RemoveOneBootcampResponse } from 'src/responses/bootcamps/removeOneBootcamp.response';
 import { SearchBootcampsResponse } from 'src/responses/bootcamps/searchBootcamp.response';
 import { UpdateOneBootcampResponse } from 'src/responses/bootcamps/updateOneBootcamp.response';
 import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
@@ -64,10 +66,10 @@ export class BootcampsController {
   @ApiResponse({
     status: 200,
     description: 'Returns a bootcamp by id',
-    type: [findOneBootcampsResponse],
+    type: [FindOneBootcampsResponse],
   })
   @Get('/:id')
-  async findOne(id: string): Promise<findOneBootcampsResponse> {
+  async findOne(id: string): Promise<FindOneBootcampsResponse> {
     try {
       return await this.bootcampsService.findOne(id);
     } catch (error) {
@@ -111,6 +113,25 @@ export class BootcampsController {
     } catch (error) {
       throw new HttpException(
         'Error al buscar bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Remove bootcamp by id.',
+    type: [RemoveOneBootcampResponse],
+  })
+  @Delete('delete/:id')
+  async removeOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<RemoveOneBootcampResponse> {
+    try {
+      return await this.bootcampsService.removeOne(id);
+    } catch (error) {
+      throw new HttpException(
+        'Error al eliminar bootcamp',
         HttpStatus.BAD_REQUEST,
       );
     }
