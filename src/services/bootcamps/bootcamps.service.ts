@@ -1,5 +1,5 @@
 // import { passwordHelper } from './../../utils/crypto/crypto.utils';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
@@ -78,6 +78,17 @@ export class BootcampsService {
       return bootcamps;
     } catch (error) {
       throw error;
+    }
+  }
+  async removeOne(id: string): Promise<BootcampEntity> {
+    try {
+      const user = await this.bootcampRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+      user.is_active = false;
+      return await this.bootcampRepository.save(user);
+    } catch (error) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
     }
   }
 }
