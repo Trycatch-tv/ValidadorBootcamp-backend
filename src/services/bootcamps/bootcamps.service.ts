@@ -97,13 +97,10 @@ export class BootcampsService {
     avatar: any,
   ): Promise<BootcampEntity | any> {
     try {
-      // verificar si el bootcamp existe
       const bootcamp = await this.bootcampRepository.findOneOrFail({
         where: { id: bootcampId, is_active: true },
       });
-      // si existe enviar el avatar al servicio de archivos
       const fileUploadResponse = await this.filesClient.uploadOne(avatar);
-      // Con la respuesta (uuid del archivo) actualizar el bootcamp (avatar)
       bootcamp.avatar = fileUploadResponse.id;
       return await this.bootcampRepository.save(bootcamp);
     } catch (error) {

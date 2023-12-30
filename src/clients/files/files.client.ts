@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import * as FormData from 'form-data';
 import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
 
 @Injectable()
@@ -13,20 +14,21 @@ export class FilesClient {
   async uploadOne(file: Express.Multer.File | any) {
     try {
       const formData = new FormData();
-      // const fileName = `${file.name}.${file.extension}`;
-      // const newFile = new File([file.blob], fileName);
-      // formData.append('file', newFile, file.originalname);
-      formData.append('file', file);
+      if (file.buffer) {
+        formData.append('file', file.buffer, file.originalname);
+      } else {
+        throw new Error('No file provided');
+      }
 
       const options = {
         method: 'POST',
         url: `${this.environmentConfigService.getFileServiceUrl()}/upload`,
         headers: {
-          'Content-Type':
-            'multipart/form-data; boundary=---011000010111000001101001',
+          ...formData.getHeaders(),
         },
         data: formData,
       };
+
       const uploadFileResponse = await axios.request(options);
       return uploadFileResponse.data;
     } catch (err) {

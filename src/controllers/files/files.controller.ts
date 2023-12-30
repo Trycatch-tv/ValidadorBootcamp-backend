@@ -23,7 +23,6 @@ export class FilesController {
     @Res() res: Response,
   ) {
     try {
-      console.log(file.buffer.toString('base64'));
       const { id } = await this.filesService.uploadOne(file);
       res.status(200).json({ id });
     } catch (err) {
