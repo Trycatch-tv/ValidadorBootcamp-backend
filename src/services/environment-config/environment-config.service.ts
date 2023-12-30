@@ -24,4 +24,8 @@ export class EnvironmentConfigService {
   getDatabaseName(): string {
     return this.config.get<string>('DATABASE_NAME');
   }
+
+  getFileServiceUrl(): string {
+    return this.config.get<string>('FILE_SERVICE_URL');
+  }
 }

@@ -9,7 +9,10 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
 import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
@@ -132,6 +135,28 @@ export class BootcampsController {
     } catch (error) {
       throw new HttpException(
         'Error al eliminar bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiBody({ type: CreateBootcampDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a bootcamp by id',
+    type: [FindOneBootcampsResponse],
+  })
+  @Post('avatar/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAvatar(
+    @Body('bootcampId', ParseUUIDPipe) bootcampId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<FindOneBootcampsResponse | any> {
+    try {
+      return await this.bootcampsService.uploadAvatar(bootcampId, file);
+    } catch (error) {
+      throw new HttpException(
+        'Error al subir el avatar del bootcamp',
         HttpStatus.BAD_REQUEST,
       );
     }

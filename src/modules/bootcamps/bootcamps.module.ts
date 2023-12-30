@@ -1,5 +1,7 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FilesClient } from 'src/clients/files/files.client';
 import { BootcampsController } from 'src/controllers/bootcamps/bootcamps.controller';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import { FeatureEntity } from 'src/models/feature/feature.entity';
@@ -12,10 +14,12 @@ import { SegmentProgramEntity } from 'src/models/program/segment/segment.program
 import { ReviewEntity } from 'src/models/review/review.entity';
 import { TestimonialEntity } from 'src/models/testimonial/testimonial.entity';
 import { UserEntity } from 'src/models/user/user.entity';
-import { BootcampsService } from 'src/services/bootcamps/bootcamps.service'; 
+import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
+import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
 
 @Module({
   imports: [
+    HttpModule,
     TypeOrmModule.forFeature([
       BootcampEntity,
       UserEntity,
@@ -32,7 +36,7 @@ import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
     ]),
   ],
   controllers: [BootcampsController],
-  providers: [BootcampsService],
+  providers: [BootcampsService, FilesClient, EnvironmentConfigService],
   exports: [TypeOrmModule],
 })
 export class BootcampsModule {}

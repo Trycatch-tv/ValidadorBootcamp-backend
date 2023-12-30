@@ -1,7 +1,6 @@
-// import { passwordHelper } from './../../utils/crypto/crypto.utils';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
+import { FilesClient } from 'src/clients/files/files.client';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import { ILike, Repository } from 'typeorm';
 
@@ -10,6 +9,7 @@ export class BootcampsService {
   constructor(
     @InjectRepository(BootcampEntity)
     private bootcampRepository: Repository<BootcampEntity>,
+    private readonly filesClient: FilesClient,
   ) {}
 
   async findAll(): Promise<BootcampEntity[]> {
@@ -89,6 +89,25 @@ export class BootcampsService {
       return await this.bootcampRepository.save(user);
     } catch (error) {
       throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async uploadAvatar(
+    bootcampId: string,
+    avatar: any,
+  ): Promise<BootcampEntity | any> {
+    try {
+      // verificar si el bootcamp existe
+      const bootcamp = await this.bootcampRepository.findOneOrFail({
+        where: { id: bootcampId, is_active: true },
+      });
+      // si existe enviar el avatar al servicio de archivos
+      const fileUploadResponse = await this.filesClient.uploadOne(avatar);
+      // Con la respuesta (uuid del archivo) actualizar el bootcamp (avatar)
+      bootcamp.avatar = fileUploadResponse.id;
+      return await this.bootcampRepository.save(bootcamp);
+    } catch (error) {
+      throw error;
     }
   }
 }
