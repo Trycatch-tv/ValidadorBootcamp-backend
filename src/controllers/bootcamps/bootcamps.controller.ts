@@ -9,11 +9,13 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { FilesClient } from 'src/clients/files/files.client';
 import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
 import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
 import { CreateOneBootcampResponse } from 'src/responses/bootcamps/createOneBootcamp.response';
@@ -27,7 +29,10 @@ import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
 @ApiTags('Bootcamps')
 @Controller('bootcamps')
 export class BootcampsController {
-  constructor(private readonly bootcampsService: BootcampsService) {
+  constructor(
+    private readonly bootcampsService: BootcampsService,
+    private readonly filesClient: FilesClient,
+  ) {
     this.bootcampsService = bootcampsService;
   }
 
@@ -157,6 +162,32 @@ export class BootcampsController {
     } catch (error) {
       throw new HttpException(
         'Error al subir el avatar del bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a bootcamp avatar by id',
+    type: [String],
+  })
+  @Get('avatar/:id')
+  async findOneAvatar(@Param('id', ParseUUIDPipe) id: string, @Res() res) {
+    try {
+      const bootcamp = await this.bootcampsService.findOneAvatar(id);
+      if (bootcamp.avatar !== null) {
+        const file = await this.filesClient.findOne(bootcamp.avatar);
+        res.setHeader('Content-Type', file['mimetype']);
+        res.send(file['blob']);
+      } else {
+        res.sendFile('default.png', {
+          root: './src/assets/img/default_avatar.png',
+        });
+      }
+    } catch (error) {
+      throw new HttpException(
+        'Error al obtener el avatar del bootcamp',
         HttpStatus.BAD_REQUEST,
       );
     }

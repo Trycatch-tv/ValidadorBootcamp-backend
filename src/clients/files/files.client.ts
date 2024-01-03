@@ -38,8 +38,8 @@ export class FilesClient {
 
   async findOne(id: string) {
     try {
-      return await this.httpService.get(
-        `${this.environmentConfigService.getFileServiceUrl}/${id}`,
+      return this.httpService.get(
+        `${this.environmentConfigService.getFileServiceUrl()}/${id}`,
       );
     } catch (err) {
       throw err;

@@ -107,4 +107,14 @@ export class BootcampsService {
       throw error;
     }
   }
+
+  async findOneAvatar(id: string): Promise<BootcampEntity> {
+    try {
+      return await this.bootcampRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
