@@ -40,6 +40,7 @@ export class FilesClient {
     try {
       return this.httpService.get(
         `${this.environmentConfigService.getFileServiceUrl()}/${id}`,
+        { responseType: 'arraybuffer' },
       );
     } catch (err) {
       throw err;

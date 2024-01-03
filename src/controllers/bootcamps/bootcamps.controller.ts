@@ -15,6 +15,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { firstValueFrom } from 'rxjs';
 import { FilesClient } from 'src/clients/files/files.client';
 import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
 import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
@@ -170,19 +172,25 @@ export class BootcampsController {
   @ApiResponse({
     status: 200,
     description: 'Returns a bootcamp avatar by id',
-    type: [String],
+    type: typeof Blob,
   })
   @Get('avatar/:id')
-  async findOneAvatar(@Param('id', ParseUUIDPipe) id: string, @Res() res) {
+  async findOneAvatar(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Res() res: Response,
+  ) {
     try {
       const bootcamp = await this.bootcampsService.findOneAvatar(id);
       if (bootcamp.avatar !== null) {
-        const file = await this.filesClient.findOne(bootcamp.avatar);
-        res.setHeader('Content-Type', file['mimetype']);
-        res.send(file['blob']);
+        const file = await firstValueFrom(
+          await this.filesClient.findOne(bootcamp.avatar),
+        );
+        const binaryFile = Buffer.from(file.data, 'binary');
+        res.setHeader('Content-Type', file.headers['content-type']);
+        res.send(binaryFile);
       } else {
-        res.sendFile('default.png', {
-          root: './src/assets/img/default_avatar.png',
+        res.sendFile('default_avatar.png', {
+          root: './src/assets/img/',
         });
       }
     } catch (error) {
