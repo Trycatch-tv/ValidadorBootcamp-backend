@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
@@ -10,6 +11,7 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+    HttpModule,
     DbModule,
     UsersModule,
     BootcampsModule,

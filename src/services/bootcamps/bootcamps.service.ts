@@ -1,7 +1,6 @@
-// import { passwordHelper } from './../../utils/crypto/crypto.utils';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
+import { FilesClient } from 'src/clients/files/files.client';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import { ILike, Repository } from 'typeorm';
 
@@ -10,6 +9,7 @@ export class BootcampsService {
   constructor(
     @InjectRepository(BootcampEntity)
     private bootcampRepository: Repository<BootcampEntity>,
+    private readonly filesClient: FilesClient,
   ) {}
 
   async findAll(): Promise<BootcampEntity[]> {
@@ -89,6 +89,32 @@ export class BootcampsService {
       return await this.bootcampRepository.save(user);
     } catch (error) {
       throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async uploadAvatar(
+    bootcampId: string,
+    avatar: any,
+  ): Promise<BootcampEntity | any> {
+    try {
+      const bootcamp = await this.bootcampRepository.findOneOrFail({
+        where: { id: bootcampId, is_active: true },
+      });
+      const fileUploadResponse = await this.filesClient.uploadOne(avatar);
+      bootcamp.avatar = fileUploadResponse.id;
+      return await this.bootcampRepository.save(bootcamp);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOneAvatar(id: string): Promise<BootcampEntity> {
+    try {
+      return await this.bootcampRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+    } catch (error) {
+      throw error;
     }
   }
 }
