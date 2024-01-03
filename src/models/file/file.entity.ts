@@ -1,5 +1,6 @@
 import { genereUUID } from 'src/utils/uuid/uuid.utils';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -9,7 +10,12 @@ import {
 
 @Entity('files')
 export class FileEntity {
-  @PrimaryColumn({ unique: true, default: genereUUID() })
+  @BeforeInsert()
+  async generateUUID() {
+    this.id = genereUUID();
+  }
+
+  @PrimaryColumn({ unique: true })
   id: string;
 
   @Column({ nullable: false })

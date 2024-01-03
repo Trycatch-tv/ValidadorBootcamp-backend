@@ -54,6 +54,12 @@ export class BootcampEntity {
   @Column({ nullable: false })
   phone: string;
 
+  @Column({ nullable: true, default: null })
+  avatar: string;
+
+  @Column({ nullable: true })
+  terms_and_conditions: string;
+
   // TODO: Pendiente para definir en las relaciones
   @Column({ nullable: false })
   user_id: string;
