@@ -14,18 +14,22 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { FilesClient } from 'src/clients/files/files.client';
 import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
 import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
+import { UploadAvatarBootcampDto } from 'src/dtos/bootcamps/uploadAvatarBootcamp.dto';
+import { UploadTermsAndConditionsBootcampDto } from 'src/dtos/bootcamps/uploadTermsAndConditionsBootcamp.dto';
 import { CreateOneBootcampResponse } from 'src/responses/bootcamps/createOneBootcamp.response';
 import { findAllBootcampsResponse } from 'src/responses/bootcamps/findAllBootcamp.response';
 import { FindOneBootcampsResponse } from 'src/responses/bootcamps/findOneBootcamp.response';
 import { RemoveOneBootcampResponse } from 'src/responses/bootcamps/removeOneBootcamp.response';
 import { SearchBootcampsResponse } from 'src/responses/bootcamps/searchBootcamp.response';
 import { UpdateOneBootcampResponse } from 'src/responses/bootcamps/updateOneBootcamp.response';
+import { UploadAvatarBootcampResponse } from 'src/responses/bootcamps/uploadAvatarBootcamp.response';
+import { UploadTermsAndConditionsBootcampResponse } from 'src/responses/bootcamps/uploadTermsAndConditionsBootcamp.response';
 import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
 
 @ApiTags('Bootcamps')
@@ -147,20 +151,39 @@ export class BootcampsController {
     }
   }
 
-  @ApiBody({ type: CreateBootcampDto })
+  @ApiBody({ type: UploadAvatarBootcampDto })
   @ApiResponse({
     status: 200,
     description: 'Returns a bootcamp by id',
-    type: [FindOneBootcampsResponse],
+    type: [UploadAvatarBootcampResponse],
   })
   @Post('avatar/upload')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        bootcampId: { type: 'string' },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('file'))
   async uploadAvatar(
     @Body('bootcampId', ParseUUIDPipe) bootcampId: string,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<FindOneBootcampsResponse | any> {
+  ): Promise<UploadAvatarBootcampResponse> {
     try {
-      return await this.bootcampsService.uploadAvatar(bootcampId, file);
+      const bootcampExists = await this.bootcampsService.exists(bootcampId);
+      if (!bootcampExists) throw new Error('Bootcamp not found');
+      const fileUploadResponse = await this.filesClient.uploadOne(file);
+      return await this.bootcampsService.uploadAvatar(
+        bootcampId,
+        fileUploadResponse.id,
+      );
     } catch (error) {
       throw new HttpException(
         'Error al subir el avatar del bootcamp',
@@ -196,6 +219,79 @@ export class BootcampsController {
     } catch (error) {
       throw new HttpException(
         'Error al obtener el avatar del bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiBody({ type: UploadTermsAndConditionsBootcampDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Upload terms and conditions by bootcamp id',
+    type: UploadTermsAndConditionsBootcampResponse,
+  })
+  @Post('terms-and-conditions/upload')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        bootcampId: { type: 'string' },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadTermsAndConditions(
+    @Body('bootcampId', ParseUUIDPipe)
+    bootcampId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<UploadAvatarBootcampResponse> {
+    try {
+      const bootcampExists = await this.bootcampsService.exists(bootcampId);
+      if (!bootcampExists) throw new Error('Bootcamp not found');
+      const fileUploadResponse = await this.filesClient.uploadOne(file);
+      return await this.bootcampsService.uploadTermsAndConditions(
+        bootcampId,
+        fileUploadResponse.id,
+      );
+    } catch (error) {
+      throw new HttpException(
+        'Error al subir los terminos y condiciones del bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a bootcamp terms and conditions by id',
+    type: typeof Blob,
+  })
+  @Get('terms-and-conditions/:id')
+  async findOneTermsAndConditions(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const bootcamp =
+        await this.bootcampsService.findOneTermsAndConditions(id);
+      if (bootcamp.terms_and_conditions !== null) {
+        const file = await firstValueFrom(
+          await this.filesClient.findOne(bootcamp.terms_and_conditions),
+        );
+        const binaryFile = Buffer.from(file.data, 'binary');
+        res.setHeader('Content-Type', file.headers['content-type']);
+        res.send(binaryFile);
+      } else {
+        res.send({ terms_and_conditions: null });
+      }
+    } catch (error) {
+      throw new HttpException(
+        'Error al obtener los terminos y condiciones del bootcamp',
         HttpStatus.BAD_REQUEST,
       );
     }
