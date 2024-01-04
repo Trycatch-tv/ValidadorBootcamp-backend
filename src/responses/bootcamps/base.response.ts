@@ -90,6 +90,19 @@ export class BaseBootcampResponse {
   phone: string;
 
   @ApiProperty({
+    example: '13b30c6a-519b-481e-83b4-1ab4f824cd8e',
+    description: 'bootcamp avatar uuid from files service',
+  })
+  avatar: string;
+
+  @ApiProperty({
+    example: '13b30c6a-519b-481e-83b4-1ab4f824cd8e',
+    description: 'terms and conditions uuid from files service',
+    required: true,
+  })
+  terms_and_conditions: string;
+
+  @ApiProperty({
     example: '12121212121212',
     description: 'user to lasted update',
     required: true,

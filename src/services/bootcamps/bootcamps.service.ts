@@ -94,14 +94,13 @@ export class BootcampsService {
 
   async uploadAvatar(
     bootcampId: string,
-    avatar: any,
+    avatarUUID: string,
   ): Promise<BootcampEntity | any> {
     try {
       const bootcamp = await this.bootcampRepository.findOneOrFail({
         where: { id: bootcampId, is_active: true },
       });
-      const fileUploadResponse = await this.filesClient.uploadOne(avatar);
-      bootcamp.avatar = fileUploadResponse.id;
+      bootcamp.avatar = avatarUUID;
       return await this.bootcampRepository.save(bootcamp);
     } catch (error) {
       throw error;
@@ -109,6 +108,42 @@ export class BootcampsService {
   }
 
   async findOneAvatar(id: string): Promise<BootcampEntity> {
+    try {
+      return await this.bootcampRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async exists(id: string): Promise<boolean> {
+    try {
+      const bootcamp = await this.bootcampRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+      return !!bootcamp;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async uploadTermsAndConditions(
+    bootcampId: string,
+    termsAndConditionsUUID: string,
+  ): Promise<BootcampEntity | any> {
+    try {
+      const bootcamp = await this.bootcampRepository.findOneOrFail({
+        where: { id: bootcampId, is_active: true },
+      });
+      bootcamp.terms_and_conditions = termsAndConditionsUUID;
+      return await this.bootcampRepository.save(bootcamp);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOneTermsAndConditions(id: string): Promise<BootcampEntity> {
     try {
       return await this.bootcampRepository.findOneOrFail({
         where: { id, is_active: true },
