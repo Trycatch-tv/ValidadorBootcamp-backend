@@ -1,4 +1,6 @@
+import { genereUUID } from 'src/utils/uuid/uuid.utils';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -8,22 +10,27 @@ import {
 
 @Entity('reviews')
 export class ReviewEntity {
+  @BeforeInsert()
+  async generateId() {
+    this.id = genereUUID();
+  }
+
   @PrimaryColumn()
   id: string;
 
   @Column({ nullable: false })
   title: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: 'float' })
   score_overall: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: 'float' })
   score_curriculum: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: 'float' })
   score_job_support: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: 'float' })
   score: number;
 
   @Column({ nullable: false })
@@ -32,11 +39,9 @@ export class ReviewEntity {
   @Column({ nullable: false })
   source: string;
 
-  // TODO: Pendiente ajustar segun las relaciones
   @Column({ nullable: false })
   user_id: string;
 
-  // TODO: Pendiente ajustar segun las relaciones
   @Column({ nullable: false })
   bootcamp_id: string;
 

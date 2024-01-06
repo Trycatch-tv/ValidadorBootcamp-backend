@@ -6,6 +6,7 @@ import { AppController } from '../controllers/app.controller';
 import { AppService } from '../services/app.service';
 import { BootcampsModule } from './bootcamps/bootcamps.module';
 import { FilesModule } from './files/files.module';
+import { ReviewsModule } from './reviews/reviews.module';
 import { DbModule } from './typeorm/db.module';
 import { UsersModule } from './users/users.module';
 
@@ -16,6 +17,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     BootcampsModule,
     FilesModule,
+    ReviewsModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.develop'],
       isGlobal: true,
@@ -36,6 +38,10 @@ import { UsersModule } from './users/users.module';
       {
         path: '',
         module: FilesModule,
+      },
+      {
+        path: '',
+        module: ReviewsModule,
       },
     ]),
   ],
