@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FilesClient } from 'src/clients/files/files.client';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import { ILike, Repository } from 'typeorm';
 
@@ -9,7 +8,6 @@ export class BootcampsService {
   constructor(
     @InjectRepository(BootcampEntity)
     private bootcampRepository: Repository<BootcampEntity>,
-    private readonly filesClient: FilesClient,
   ) {}
 
   async findAll(): Promise<BootcampEntity[]> {
