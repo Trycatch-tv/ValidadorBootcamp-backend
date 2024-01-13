@@ -27,7 +27,6 @@ export class ReviewsController {
     try {
       return await this.reviewsService.createOne(createReviewDto);
     } catch (error) {
-      console.log(error.message);
       throw new HttpException('Error creating review', HttpStatus.BAD_REQUEST);
     }
   }

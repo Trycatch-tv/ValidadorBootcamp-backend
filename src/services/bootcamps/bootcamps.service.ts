@@ -150,4 +150,20 @@ export class BootcampsService {
       throw error;
     }
   }
+
+  async updateScore(
+    bootcampId: string,
+    score: number,
+  ): Promise<BootcampEntity> {
+    try {
+      const bootcamp = await this.bootcampRepository.findOneOrFail({
+        where: { id: bootcampId, is_active: true },
+      });
+      bootcamp.score = score;
+      return await this.bootcampRepository.save(bootcamp);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 }

@@ -1,3 +1,3 @@
-import { BaseBootcampResponse } from './base.response';
+import { BaseBootcampResponse } from './baseBootcamp.response';
 
 export class UploadTermsAndConditionsBootcampResponse extends BaseBootcampResponse {}
