@@ -1,4 +1,6 @@
+import { genereUUID } from 'src/utils/uuid/uuid.utils';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -8,6 +10,11 @@ import {
 
 @Entity('programs')
 export class ProgramEntity {
+  @BeforeInsert()
+  async generateId() {
+    this.id = genereUUID();
+  }
+
   @PrimaryColumn()
   id: string;
 
@@ -15,26 +22,19 @@ export class ProgramEntity {
   name: string;
 
   @Column({ nullable: false })
-  country_name: string;
+  mode: string;
+
+  @Column({ nullable: false, type: 'float' })
+  duration: number;
 
   @Column({ nullable: false })
-  country_iso: string;
+  bootcamp_id: string;
 
-  @Column({ nullable: false })
-  city_name: string;
-
-  @Column({ nullable: false })
-  address: string;
-
-  @Column({ nullable: false })
-  email: string;
-
-  @Column({ nullable: false })
-  phone: string;
-
-  // TODO: Pendiente ajustar segun las relaciones
   @Column({ nullable: false })
   user_id: string;
+
+  @Column({ nullable: true, default: null })
+  content: string;
 
   @Column({ nullable: false, default: true })
   is_active: boolean;

@@ -36,7 +36,7 @@ export class BootcampEntity {
   @Column({ nullable: false, default: false })
   is_verified: boolean;
 
-  @Column({ nullable: true, default: 0 })
+  @Column({ nullable: true, default: 0.0, type: 'float' })
   score: number;
 
   @Column({ nullable: false })
@@ -60,7 +60,6 @@ export class BootcampEntity {
   @Column({ nullable: true })
   terms_and_conditions: string;
 
-  // TODO: Pendiente para definir en las relaciones
   @Column({ nullable: false })
   user_id: string;
 

@@ -27,7 +27,7 @@ import { UsersService } from 'src/services/users/users.service';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {
-    this.usersService = usersService;
+    // this.usersService = usersService;
   }
 
   @ApiResponse({
@@ -94,7 +94,7 @@ export class UsersController {
     description: 'User created by admin',
     type: [CreateOneUserResponse],
   })
-  @Post('create')
+  @Post('/')
   async createOne(@Body() body: CreateUserDto): Promise<CreateOneUserResponse> {
     try {
       return await this.usersService.createOne(body);

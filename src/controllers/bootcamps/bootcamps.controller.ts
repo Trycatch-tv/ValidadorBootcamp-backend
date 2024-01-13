@@ -20,6 +20,7 @@ import { firstValueFrom } from 'rxjs';
 import { FilesClient } from 'src/clients/files/files.client';
 import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
 import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
+import { UpdateScoreBootcampDto } from 'src/dtos/bootcamps/updateScoreBoocamp.dto';
 import { UploadAvatarBootcampDto } from 'src/dtos/bootcamps/uploadAvatarBootcamp.dto';
 import { UploadTermsAndConditionsBootcampDto } from 'src/dtos/bootcamps/uploadTermsAndConditionsBootcamp.dto';
 import { CreateOneBootcampResponse } from 'src/responses/bootcamps/createOneBootcamp.response';
@@ -28,6 +29,7 @@ import { FindOneBootcampsResponse } from 'src/responses/bootcamps/findOneBootcam
 import { RemoveOneBootcampResponse } from 'src/responses/bootcamps/removeOneBootcamp.response';
 import { SearchBootcampsResponse } from 'src/responses/bootcamps/searchBootcamp.response';
 import { UpdateOneBootcampResponse } from 'src/responses/bootcamps/updateOneBootcamp.response';
+import { UpdateScoreBootcampResponse } from 'src/responses/bootcamps/updateScoreBootcamp.response';
 import { UploadAvatarBootcampResponse } from 'src/responses/bootcamps/uploadAvatarBootcamp.response';
 import { UploadTermsAndConditionsBootcampResponse } from 'src/responses/bootcamps/uploadTermsAndConditionsBootcamp.response';
 import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
@@ -63,7 +65,7 @@ export class BootcampsController {
     description: 'Bootcamp created by admin',
     type: [CreateOneBootcampResponse],
   })
-  @Post('create')
+  @Post('/')
   async createOne(
     @Body() body: CreateBootcampDto,
   ): Promise<CreateOneBootcampResponse> {
@@ -292,6 +294,27 @@ export class BootcampsController {
     } catch (error) {
       throw new HttpException(
         'Error al obtener los terminos y condiciones del bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiBody({ type: UpdateScoreBootcampDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Updated score by bootcamp id',
+    type: [UpdateScoreBootcampResponse],
+  })
+  @Post('score/:id')
+  async updateScore(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('score') score: number,
+  ): Promise<UpdateScoreBootcampResponse> {
+    try {
+      return await this.bootcampsService.updateScore(id, score);
+    } catch (error) {
+      throw new HttpException(
+        'Error al actualizar el score del bootcamp',
         HttpStatus.BAD_REQUEST,
       );
     }
