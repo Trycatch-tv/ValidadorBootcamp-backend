@@ -10,3 +10,13 @@ services:
       - POSTGRES_PASSWORD=trycatch_tv23
     ports:
       - 5432:5432
+
+  bootcamp-backend:
+    build: .
+    container_name: bootcamp-backend
+    links:
+      - db
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
