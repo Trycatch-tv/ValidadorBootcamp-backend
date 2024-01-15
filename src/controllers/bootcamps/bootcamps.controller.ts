@@ -25,6 +25,7 @@ import { UploadAvatarBootcampDto } from 'src/dtos/bootcamps/uploadAvatarBootcamp
 import { UploadTermsAndConditionsBootcampDto } from 'src/dtos/bootcamps/uploadTermsAndConditionsBootcamp.dto';
 import { CreateOneBootcampResponse } from 'src/responses/bootcamps/createOneBootcamp.response';
 import { findAllBootcampsResponse } from 'src/responses/bootcamps/findAllBootcamp.response';
+import { FindAllByScoreBootcampsResponse } from 'src/responses/bootcamps/findAllByScoreBootcamps.response';
 import { FindOneBootcampsResponse } from 'src/responses/bootcamps/findOneBootcamp.response';
 import { RemoveOneBootcampResponse } from 'src/responses/bootcamps/removeOneBootcamp.response';
 import { SearchBootcampsResponse } from 'src/responses/bootcamps/searchBootcamp.response';
@@ -315,6 +316,23 @@ export class BootcampsController {
     } catch (error) {
       throw new HttpException(
         'Error al actualizar el score del bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Returns bootcamps ranking by score',
+    type: [FindAllByScoreBootcampsResponse],
+  })
+  @Get('ranking/list')
+  async findAllByScore(): Promise<FindAllByScoreBootcampsResponse[]> {
+    try {
+      return await this.bootcampsService.findAllByScore();
+    } catch (error) {
+      throw new HttpException(
+        'Error al obtener el ranking del bootcamp',
         HttpStatus.BAD_REQUEST,
       );
     }

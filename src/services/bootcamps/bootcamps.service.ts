@@ -166,4 +166,16 @@ export class BootcampsService {
       throw error;
     }
   }
+
+  async findAllByScore(): Promise<BootcampEntity[]> {
+    try {
+      const bootcamps = await this.bootcampRepository.find({
+        where: { is_active: true },
+        order: { score: 'DESC' },
+      });
+      return bootcamps;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

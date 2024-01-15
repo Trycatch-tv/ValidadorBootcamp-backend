@@ -20,4 +20,60 @@ export class ProgramsService {
       throw error;
     }
   }
+
+  async findAll(): Promise<ProgramEntity[]> {
+    try {
+      return await this.programsRepository.find({
+        where: { is_active: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOneByBootcampId(id: string): Promise<ProgramEntity> {
+    try {
+      return await this.programsRepository.findOneOrFail({
+        where: { bootcamp_id: id, is_active: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async uploadContent(
+    programId: string,
+    contentUUID: string,
+  ): Promise<ProgramEntity> {
+    try {
+      const program = await this.programsRepository.findOneOrFail({
+        where: { id: programId, is_active: true },
+      });
+      program.content = contentUUID;
+      return await this.programsRepository.save(program);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOneContent(id: string): Promise<ProgramEntity> {
+    try {
+      return await this.programsRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async exists(id: string): Promise<boolean> {
+    try {
+      const program = await this.programsRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+      return !!program;
+    } catch (error) {
+      return false;
+    }
+  }
 }

@@ -28,4 +28,14 @@ export class ReviewsService {
       throw error;
     }
   }
+
+  async findAll(): Promise<ReviewEntity[]> {
+    try {
+      return await this.reviewRepository.find({
+        where: { is_active: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
