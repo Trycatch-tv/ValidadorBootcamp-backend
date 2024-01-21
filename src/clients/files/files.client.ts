@@ -22,12 +22,10 @@ export class FilesClient {
 
       const options = {
         method: 'POST',
-        url: `${this.environmentConfigService.getFileServiceUrl()}/upload`,
-        headers: {
-          ...formData.getHeaders(),
-        },
+        url: `${this.environmentConfigService.FILE_SERVICE_URL}/upload`,
+        headers: formData.getHeaders(),
         data: formData,
-      };
+      } as const;
 
       const uploadFileResponse = await axios.request(options);
       return uploadFileResponse.data;
@@ -39,7 +37,7 @@ export class FilesClient {
   async findOne(id: string) {
     try {
       return this.httpService.get(
-        `${this.environmentConfigService.getFileServiceUrl()}/${id}`,
+        `${this.environmentConfigService.FILE_SERVICE_URL}/${id}`,
         { responseType: 'arraybuffer' },
       );
     } catch (err) {

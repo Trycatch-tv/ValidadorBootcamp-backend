@@ -10,6 +10,7 @@ import { ProgramsModule } from './programs/programs.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { DbModule } from './typeorm/db.module';
 import { UsersModule } from './users/users.module';
+import { environmentConfigSchema } from '../types/environment-config';
 
 @Module({
   imports: [
@@ -23,6 +24,11 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       envFilePath: ['.env.develop'],
       isGlobal: true,
+      validationSchema: environmentConfigSchema,
+      // https://joi.dev/api/?v=17.9.1#anyvalidatevalue-options
+      validationOptions: {
+        allowUnknown: true,
+      },
     }),
     RouterModule.register([
       {
