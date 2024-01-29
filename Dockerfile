@@ -8,7 +8,9 @@ COPY package*.json ./
 
 USER node
 
-RUN npm install
+RUN npm ci && \
+  npm audit && \
+  npm cache clean --force
 
 COPY --chown=node:node . .
 
