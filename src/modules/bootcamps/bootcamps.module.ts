@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FilesClient } from 'src/clients/files/files.client';
+import { ReviewsClient } from 'src/clients/reviews/reviews.client';
 import { BootcampsController } from 'src/controllers/bootcamps/bootcamps.controller';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import { FeatureEntity } from 'src/models/feature/feature.entity';
@@ -36,7 +37,12 @@ import { EnvironmentConfigService } from 'src/services/environment-config/enviro
     ]),
   ],
   controllers: [BootcampsController],
-  providers: [BootcampsService, FilesClient, EnvironmentConfigService],
+  providers: [
+    BootcampsService,
+    FilesClient,
+    ReviewsClient,
+    EnvironmentConfigService,
+  ],
   exports: [TypeOrmModule],
 })
 export class BootcampsModule {}

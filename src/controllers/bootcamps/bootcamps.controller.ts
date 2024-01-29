@@ -23,6 +23,7 @@ import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
 import { UpdateScoreBootcampDto } from 'src/dtos/bootcamps/updateScoreBoocamp.dto';
 import { UploadAvatarBootcampDto } from 'src/dtos/bootcamps/uploadAvatarBootcamp.dto';
 import { UploadTermsAndConditionsBootcampDto } from 'src/dtos/bootcamps/uploadTermsAndConditionsBootcamp.dto';
+import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import { CreateOneBootcampResponse } from 'src/responses/bootcamps/createOneBootcamp.response';
 import { findAllBootcampsResponse } from 'src/responses/bootcamps/findAllBootcamp.response';
 import { FindAllByScoreBootcampsResponse } from 'src/responses/bootcamps/findAllByScoreBootcamps.response';
@@ -333,6 +334,25 @@ export class BootcampsController {
     } catch (error) {
       throw new HttpException(
         'Error al obtener el ranking del bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Returns bootcamp score average by id',
+    type: Number,
+  })
+  @Get('score/:id')
+  async getScoreAverage(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<BootcampEntity | any> {
+    try {
+      return await this.bootcampsService.getScoreAverage(id);
+    } catch (error) {
+      throw new HttpException(
+        'Error al obtener el score promedio del bootcamp',
         HttpStatus.BAD_REQUEST,
       );
     }

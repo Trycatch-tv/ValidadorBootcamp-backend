@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
 import { AppController } from '../controllers/app.controller';
 import { AppService } from '../services/app.service';
+import { environmentConfigSchema } from '../types/environment-config';
 import { BootcampsModule } from './bootcamps/bootcamps.module';
 import { FilesModule } from './files/files.module';
 import { ProgramsModule } from './programs/programs.module';
@@ -21,8 +22,13 @@ import { UsersModule } from './users/users.module';
     ReviewsModule,
     ProgramsModule,
     ConfigModule.forRoot({
-      envFilePath: ['.env.develop'],
+      envFilePath: ['.env.develop', '.env'],
       isGlobal: true,
+      validationSchema: environmentConfigSchema,
+      // https://joi.dev/api/?v=17.9.1#anyvalidatevalue-options
+      validationOptions: {
+        allowUnknown: true,
+      },
     }),
     RouterModule.register([
       {

@@ -1,31 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import type { EnvironmentConfig } from '../../types/environment-config';
 
 @Injectable()
-export class EnvironmentConfigService {
-  constructor(private config: ConfigService) {}
+export class EnvironmentConfigService implements EnvironmentConfig {
+  FILE_SERVICE_URL: string;
+  DATABASE_HOST: string;
+  DATABASE_PORT: number;
+  DATABASE_USER: string;
+  DATABASE_PASSWORD: string;
+  DATABASE_NAME: string;
+  NODE_ENV: EnvironmentConfig['NODE_ENV'];
 
-  getDatabaseHost(): string {
-    return this.config.get<string>('DATABASE_HOST');
+  constructor(private config: ConfigService<EnvironmentConfig, true>) {
+    this.FILE_SERVICE_URL = config.get('FILE_SERVICE_URL')
+    this.DATABASE_HOST = config.get('DATABASE_HOST')
+    this.DATABASE_PORT = config.get('DATABASE_PORT')
+    this.DATABASE_USER = config.get('DATABASE_USER')
+    this.DATABASE_PASSWORD = config.get('DATABASE_PASSWORD')
+    this.DATABASE_NAME = config.get('DATABASE_NAME')
+    this.NODE_ENV = config.get('NODE_ENV')
   }
 
-  getDatabasePort(): number {
-    return Number(this.config.get<number>('DATABASE_PORT'));
-  }
-
-  getDatabaseUser(): string {
-    return this.config.get<string>('DATABASE_USER');
-  }
-
-  getDatabasePassword(): string {
-    return this.config.get<string>('DATABASE_PASSWORD');
-  }
-
-  getDatabaseName(): string {
-    return this.config.get<string>('DATABASE_NAME');
-  }
-
-  getFileServiceUrl(): string {
-    return this.config.get<string>('FILE_SERVICE_URL');
+  getReviewsServiceUrl(): string {
+    return this.config.get<string>('REVIEWS_SERVICE_URL');
   }
 }

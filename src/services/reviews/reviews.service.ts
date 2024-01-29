@@ -38,4 +38,17 @@ export class ReviewsService {
       throw error;
     }
   }
+
+  async getScoreAverage(bootcampId: string): Promise<number> {
+    try {
+      const reviews = await this.reviewRepository.find({
+        where: { bootcamp_id: bootcampId, is_active: true },
+      });
+      const scoreAverage =
+        reviews.reduce((acc, review) => acc + review.score, 0) / reviews.length;
+      return Number(scoreAverage.toFixed(2));
+    } catch (error) {
+      throw error;
+    }
+  }
 }

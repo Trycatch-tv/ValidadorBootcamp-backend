@@ -4,6 +4,8 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
+  ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -43,6 +45,22 @@ export class ReviewsController {
   async findAll(): Promise<FindAllReviewsResponse[]> {
     try {
       return await this.reviewsService.findAll();
+    } catch (error) {
+      throw new HttpException('Error fetching reviews', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Get score average by bootcamp id',
+    type: Number,
+  })
+  @Get('bootcamp/:id/average')
+  async getScoreAverage(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<number> {
+    try {
+      return await this.reviewsService.getScoreAverage(id);
     } catch (error) {
       throw new HttpException('Error fetching reviews', HttpStatus.BAD_REQUEST);
     }
