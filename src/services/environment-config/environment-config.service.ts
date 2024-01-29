@@ -28,4 +28,8 @@ export class EnvironmentConfigService {
   getFileServiceUrl(): string {
     return this.config.get<string>('FILE_SERVICE_URL');
   }
+
+  getReviewsServiceUrl(): string {
+    return this.config.get<string>('REVIEWS_SERVICE_URL');
+  }
 }
