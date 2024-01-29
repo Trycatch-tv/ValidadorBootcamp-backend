@@ -13,7 +13,7 @@ export class ReviewsClient {
     try {
       const response = await this.httpService
         .get(
-          `${this.environmentConfigService.getReviewsServiceUrl()}/bootcamp/${bootcampId}/average`,
+          `${this.environmentConfigService.REVIEW_SERVICE_URL}/bootcamp/${bootcampId}/average`,
         )
         .toPromise();
       return response.data;
