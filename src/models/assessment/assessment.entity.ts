@@ -1,21 +1,34 @@
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import { genereUUID } from 'src/utils/uuid/uuid.utils';
+import {
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  Entity,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('assessments')
 export class AssessmentEntity {
-  @Column({ primary: true, generated: true, type: 'int' })
-  id: number;
+  @BeforeInsert()
+  async generateId() {
+    this.id = genereUUID();
+  }
 
-  @Column({ nullable: false, length: 100 })
+  @Column({ primary: true, nullable: false })
+  id: string;
+
+  @Column({ nullable: false })
   bootcamp_id: string;
 
-  @Column({ nullable: false, type: 'int' })
+  @Column({ nullable: false })
   category_id: number;
 
-  @Column({ nullable: false, type: 'int' })
+  @Column({ nullable: false })
   criteria_id: number;
 
-  @Column({ nullable: false, type: 'int' })
+  @Column({ nullable: false })
   weight: number;
+
   @Column({ nullable: false, default: true })
   is_active: boolean;
 
