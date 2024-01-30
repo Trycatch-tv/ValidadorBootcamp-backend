@@ -5,6 +5,7 @@ import { RouterModule } from '@nestjs/core';
 import { AppController } from '../controllers/app.controller';
 import { AppService } from '../services/app.service';
 import { environmentConfigSchema } from '../types/environment-config';
+import { AssessmentsModule } from './assessments/assessments.module';
 import { BootcampsModule } from './bootcamps/bootcamps.module';
 import { FilesModule } from './files/files.module';
 import { ProgramsModule } from './programs/programs.module';
@@ -21,6 +22,7 @@ import { UsersModule } from './users/users.module';
     FilesModule,
     ReviewsModule,
     ProgramsModule,
+    AssessmentsModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.develop', '.env'],
       isGlobal: true,
@@ -54,6 +56,10 @@ import { UsersModule } from './users/users.module';
       {
         path: '',
         module: ProgramsModule,
+      },
+      {
+        path: '',
+        module: AssessmentsModule,
       },
     ]),
   ],
