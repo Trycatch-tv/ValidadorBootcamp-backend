@@ -9,6 +9,8 @@ const environmentConfigSchema = Joi.object({
   NODE_ENV: Joi.string().valid('dev', 'prod').required(),
   FILE_SERVICE_URL: Joi.string().uri().required(),
   REVIEW_SERVICE_URL: Joi.string().uri().required(),
+  BOOTCAMP_SERVICE_URL: Joi.string().uri().required(),
+  ASSESSEMENT_SERVICE_URL: Joi.string().uri().required(),
 });
 
 interface EnvironmentConfig {
@@ -20,6 +22,8 @@ interface EnvironmentConfig {
   NODE_ENV: 'dev' | 'prod';
   FILE_SERVICE_URL: string;
   REVIEW_SERVICE_URL: string;
+  BOOTCAMP_SERVICE_URL: string;
+  ASSESSEMENT_SERVICE_URL: string;
 }
 
 export { environmentConfigSchema };

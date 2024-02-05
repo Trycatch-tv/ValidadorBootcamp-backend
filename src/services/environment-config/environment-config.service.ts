@@ -11,6 +11,8 @@ export class EnvironmentConfigService implements EnvironmentConfig {
   DATABASE_PASSWORD: string;
   DATABASE_NAME: string;
   REVIEW_SERVICE_URL: string;
+  BOOTCAMP_SERVICE_URL: string;
+  ASSESSEMENT_SERVICE_URL: string;
   NODE_ENV: EnvironmentConfig['NODE_ENV'];
 
   constructor(private config: ConfigService<EnvironmentConfig, true>) {
@@ -21,6 +23,8 @@ export class EnvironmentConfigService implements EnvironmentConfig {
     this.DATABASE_PASSWORD = config.get('DATABASE_PASSWORD');
     this.DATABASE_NAME = config.get('DATABASE_NAME');
     this.REVIEW_SERVICE_URL = config.get('REVIEW_SERVICE_URL');
+    this.BOOTCAMP_SERVICE_URL = config.get('BOOTCAMP_SERVICE_URL');
+    this.ASSESSEMENT_SERVICE_URL = config.get('ASSESSEMENT_SERVICE_URL');
     this.NODE_ENV = config.get('NODE_ENV');
   }
 }

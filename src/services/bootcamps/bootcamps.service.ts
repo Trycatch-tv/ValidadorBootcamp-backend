@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReviewsClient } from 'src/clients/reviews/reviews.client';
+import { AssessmentEntity } from 'src/models/assessment/assessment.entity';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import EvaluationCriteriaWeigths from 'src/utils/data/bootcamp/EvaluationCriteriaWeigths';
 import { ILike, Repository } from 'typeorm';
@@ -183,7 +184,10 @@ export class BootcampsService {
     }
   }
 
-  async getScoreAverage(bootcampId: string): Promise<BootcampEntity> {
+  async getScoreAverage(
+    bootcampId: string,
+    assessments: AssessmentEntity[],
+  ): Promise<BootcampEntity> {
     try {
       // Validar que exista el bootcamp
       const bootcamp = await this.bootcampRepository.findOneOrFail({
@@ -195,173 +199,172 @@ export class BootcampsService {
       );
       // TODO: Consultar evaluación del bootcamp utilizando el client -> crear el modelo evaluación y todos lo demás -> crear el client
       // Creamos un objeto de evaluación fake para testear.
-      const fakeScore = {
-        bootcampAssessment: [
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 1,
-            criteria_code: 'RV01',
-            criteria_id: 1,
-            weight: 4,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 1,
-            criteria_code: 'RV02',
-            criteria_id: 2,
-            weight: 2,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 1,
-            criteria_code: 'RV03',
-            criteria_id: 3,
-            weight: 3,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 1,
-            criteria_code: 'RV04',
-            criteria_id: 4,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF01',
-            criteria_id: 1,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF02',
-            criteria_id: 2,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF03',
-            criteria_id: 3,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF04',
-            criteria_id: 4,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF05',
-            criteria_id: 5,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF06',
-            criteria_id: 6,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF07',
-            criteria_id: 7,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF08',
-            criteria_id: 8,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF09',
-            criteria_id: 9,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 2,
-            criteria_code: 'EF10',
-            criteria_id: 10,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 3,
-            criteria_code: 'CF01',
-            criteria_id: 1,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 3,
-            criteria_code: 'CF02',
-            criteria_id: 2,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 3,
-            criteria_code: 'CF03',
-            criteria_id: 3,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 3,
-            criteria_code: 'CF04',
-            criteria_id: 4,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 3,
-            criteria_code: 'CF05',
-            criteria_id: 5,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 3,
-            criteria_code: 'CF06',
-            criteria_id: 6,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 3,
-            criteria_code: 'CF07',
-            criteria_id: 7,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 3,
-            criteria_code: 'CF08',
-            criteria_id: 8,
-            weight: 5,
-          },
-          {
-            bootcamp_id: bootcamp.id,
-            category_id: 3,
-            criteria_code: 'CF09',
-            criteria_id: 9,
-            weight: 5,
-          },
-        ],
-      };
+      // const fakeScore = [
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 1,
+      //     criteria_code: 'RV01',
+      //     criteria_id: 1,
+      //     weight: 4,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 1,
+      //     criteria_code: 'RV02',
+      //     criteria_id: 2,
+      //     weight: 2,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 1,
+      //     criteria_code: 'RV03',
+      //     criteria_id: 3,
+      //     weight: 3,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 1,
+      //     criteria_code: 'RV04',
+      //     criteria_id: 4,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF01',
+      //     criteria_id: 1,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF02',
+      //     criteria_id: 2,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF03',
+      //     criteria_id: 3,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF04',
+      //     criteria_id: 4,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF05',
+      //     criteria_id: 5,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF06',
+      //     criteria_id: 6,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF07',
+      //     criteria_id: 7,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF08',
+      //     criteria_id: 8,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF09',
+      //     criteria_id: 9,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 2,
+      //     criteria_code: 'EF10',
+      //     criteria_id: 10,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 3,
+      //     criteria_code: 'CF01',
+      //     criteria_id: 1,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 3,
+      //     criteria_code: 'CF02',
+      //     criteria_id: 2,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 3,
+      //     criteria_code: 'CF03',
+      //     criteria_id: 3,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 3,
+      //     criteria_code: 'CF04',
+      //     criteria_id: 4,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 3,
+      //     criteria_code: 'CF05',
+      //     criteria_id: 5,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 3,
+      //     criteria_code: 'CF06',
+      //     criteria_id: 6,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 3,
+      //     criteria_code: 'CF07',
+      //     criteria_id: 7,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 3,
+      //     criteria_code: 'CF08',
+      //     criteria_id: 8,
+      //     weight: 5,
+      //   },
+      //   {
+      //     bootcamp_id: bootcamp.id,
+      //     category_id: 3,
+      //     criteria_code: 'CF09',
+      //     criteria_id: 9,
+      //     weight: 5,
+      //   },
+      // ];
+      const realScore = assessments;
       // Consultar criterios de evaluación
-      const assessment = fakeScore.bootcampAssessment.map((criteria) => {
+      const assessment = realScore.map((criteria) => {
         // Identificar la categoría
         const getCategory = EvaluationCriteriaWeigths.find(
           (category) => category.id === criteria.category_id,
@@ -430,6 +433,23 @@ export class BootcampsService {
       // Actualizar score del bootcamp (Sin almacenarlo en la base de datos)
       bootcamp.score = scoreTotal;
       return bootcamp;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async recalculateScoreAverage(
+    bootcampId: string,
+    assessments: AssessmentEntity[],
+  ): Promise<BootcampEntity> {
+    try {
+      // Calcular el score promedio
+      const getScoreAverageResponse = await this.getScoreAverage(
+        bootcampId,
+        assessments,
+      );
+      // Actualizar el score del bootcamp
+      return await this.updateScore(bootcampId, getScoreAverageResponse.score);
     } catch (error) {
       throw error;
     }
