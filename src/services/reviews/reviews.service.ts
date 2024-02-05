@@ -51,4 +51,14 @@ export class ReviewsService {
       throw error;
     }
   }
+
+  async findAllByBootcampId(bootcampId: string): Promise<ReviewEntity[]> {
+    try {
+      return await this.reviewRepository.find({
+        where: { bootcamp_id: bootcampId, is_active: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -65,4 +65,15 @@ export class ReviewsController {
       throw new HttpException('Error fetching reviews', HttpStatus.BAD_REQUEST);
     }
   }
+
+  @Get('bootcamp/list/:id')
+  async findAllByBootcampId(
+    @Param('id', ParseUUIDPipe) bootcampId: string,
+  ): Promise<FindAllReviewsResponse[]> {
+    try {
+      return await this.reviewsService.findAllByBootcampId(bootcampId);
+    } catch (error) {
+      throw new HttpException('Error fetching reviews', HttpStatus.BAD_REQUEST);
+    }
+  }
 }
