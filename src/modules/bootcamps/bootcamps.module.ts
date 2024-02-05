@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AssessmentsClient } from 'src/clients/assessments/assessments.client';
 import { FilesClient } from 'src/clients/files/files.client';
 import { ReviewsClient } from 'src/clients/reviews/reviews.client';
 import { BootcampsController } from 'src/controllers/bootcamps/bootcamps.controller';
@@ -41,6 +42,7 @@ import { EnvironmentConfigService } from 'src/services/environment-config/enviro
     BootcampsService,
     FilesClient,
     ReviewsClient,
+    AssessmentsClient,
     EnvironmentConfigService,
   ],
   exports: [TypeOrmModule],

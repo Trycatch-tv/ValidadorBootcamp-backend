@@ -17,6 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
+import { AssessmentsClient } from 'src/clients/assessments/assessments.client';
 import { FilesClient } from 'src/clients/files/files.client';
 import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
 import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
@@ -42,6 +43,7 @@ export class BootcampsController {
   constructor(
     private readonly bootcampsService: BootcampsService,
     private readonly filesClient: FilesClient,
+    private readonly assessmentsClient: AssessmentsClient,
   ) {
     this.bootcampsService = bootcampsService;
   }
@@ -347,12 +349,39 @@ export class BootcampsController {
   @Get('score/:id')
   async getScoreAverage(
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<BootcampEntity | any> {
+  ): Promise<BootcampEntity> {
     try {
-      return await this.bootcampsService.getScoreAverage(id);
+      const getAssessmentByBootcampIdResponse =
+        await this.assessmentsClient.getAssessmentByBootcampId(id);
+      return await this.bootcampsService.getScoreAverage(
+        id,
+        getAssessmentByBootcampIdResponse,
+      );
     } catch (error) {
       throw new HttpException(
         'Error al obtener el score promedio del bootcamp',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Returns bootcamp score average by id',
+    type: Number,
+  })
+  @Post('score/recalculate/:id')
+  async recalculateScoreAverage(@Param('id', ParseUUIDPipe) id: string) {
+    try {
+      const getAssessmentByBootcampIdResponse =
+        await this.assessmentsClient.getAssessmentByBootcampId(id);
+      return await this.bootcampsService.recalculateScoreAverage(
+        id,
+        getAssessmentByBootcampIdResponse,
+      );
+    } catch (error) {
+      throw new HttpException(
+        'Error al recalcular el score promedio del bootcamp',
         HttpStatus.BAD_REQUEST,
       );
     }
