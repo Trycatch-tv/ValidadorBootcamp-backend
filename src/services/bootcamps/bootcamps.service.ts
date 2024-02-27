@@ -4,7 +4,7 @@ import { ReviewsClient } from 'src/clients/reviews/reviews.client';
 import { AssessmentEntity } from 'src/models/assessment/assessment.entity';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import EvaluationCriteriaWeigths from 'src/utils/data/bootcamp/EvaluationCriteriaWeigths';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Not, Repository } from 'typeorm';
 // import CriteriosEvaluacion from '../../utils/data/bootcamp/criterios-evaluacion.json';
 
 @Injectable()
@@ -175,7 +175,7 @@ export class BootcampsService {
   async findAllByScore(): Promise<BootcampEntity[]> {
     try {
       const bootcamps = await this.bootcampRepository.find({
-        where: { is_active: true },
+        where: { is_active: true, score: Not(0.0) },
         order: { score: 'DESC' },
       });
       return bootcamps;
