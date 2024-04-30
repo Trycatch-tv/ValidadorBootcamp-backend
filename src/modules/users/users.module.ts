@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersController } from 'src/controllers/users/users.controller';
 import { UserAuthorizationMiddleware } from 'src/middlewares/users/authorization.middleware';
@@ -35,20 +35,21 @@ import { UsersService } from 'src/services/users/users.service';
   providers: [UsersService],
   exports: [TypeOrmModule],
 })
-export class UsersModule {
+export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(UserAuthorizationMiddleware)
       .exclude(
-        { path: 'users/', method: RequestMethod.GET },
-        { path: 'users/:id', method: RequestMethod.GET },
-        { path: 'users/remove/:id', method: RequestMethod.DELETE },
-        { path: 'users/update/:id', method: RequestMethod.PUT },
-        { path: 'users/' , method: RequestMethod.POST},
-        { path: 'users/search/:key', method: RequestMethod.GET},
-        { path: 'users/signup', method: RequestMethod.POST },
-        { path: 'users/signin', method: RequestMethod.POST },
+        { path: '/', method: RequestMethod.GET },
+        { path: '/:id', method: RequestMethod.GET },
+        { path: '/remove/:id', method: RequestMethod.DELETE },
+        { path: '/update/:id', method: RequestMethod.PUT },
+        { path: '/' , method: RequestMethod.POST},
+        { path: '/search/:key', method: RequestMethod.GET},
+        { path: '/signup', method: RequestMethod.POST },
+        { path: '/signin', method: RequestMethod.POST }
       )
       .forRoutes('users');
   }
 }
+
