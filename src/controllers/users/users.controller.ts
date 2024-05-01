@@ -8,7 +8,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/dtos/users/createuser.dto';
 import { SigninDto } from 'src/dtos/users/signin.dto';
 import { SignupDto } from 'src/dtos/users/signup.dto';
@@ -41,6 +41,7 @@ export class UsersController {
     return 'ok';
   }
 
+  @ApiSecurity('bearer')
   @ApiResponse({
     status: 200,
     description: 'Returns an array of users',
