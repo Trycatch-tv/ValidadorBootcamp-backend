@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 import { UsersController } from 'src/controllers/users/users.controller';
 import { UserAuthorizationMiddleware } from 'src/middlewares/users/authorization.middleware';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
@@ -32,7 +33,7 @@ import { UsersService } from 'src/services/users/users.service';
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, JwtService],
   exports: [TypeOrmModule],
 })
 export class UsersModule implements NestModule {
