@@ -31,9 +31,9 @@ export class ProgramsService {
     }
   }
 
-  async findOneByBootcampId(id: string): Promise<ProgramEntity> {
+  async findManyByBootcampId(id: string): Promise<ProgramEntity[]> {
     try {
-      return await this.programsRepository.findOneOrFail({
+      return await this.programsRepository.find({
         where: { bootcamp_id: id, is_active: true },
       });
     } catch (error) {
