@@ -19,7 +19,7 @@ import { FilesClient } from 'src/clients/files/files.client';
 import { CreateOneProgramDto } from 'src/dtos/programs/createOneProgram.dto';
 import { UploadContentProgramDto } from 'src/dtos/programs/uploadContentProgram.dto';
 import { FindAllProgramsResponse } from 'src/responses/programs/findAllPrograms.response';
-import { FindOneByBootcampIdProgramsResponse } from 'src/responses/programs/findOneByBootcampIdPrograms.response';
+import { FindManyByBootcampIdProgramsResponse } from 'src/responses/programs/findManyByBootcampIdPrograms.response';
 import { ProgramsBaseResponse } from 'src/responses/programs/programsBase.response';
 import { UploadContentProgram } from 'src/responses/programs/uploadContentProgram.response';
 import { ProgramsService } from 'src/services/programs/programs.service';
@@ -71,15 +71,15 @@ export class ProgramsController {
 
   @ApiResponse({
     status: 200,
-    description: 'Program found successfully',
-    type: FindOneByBootcampIdProgramsResponse,
+    description: 'Programs found successfully',
+    type: FindManyByBootcampIdProgramsResponse,
   })
   @Get('/bootcamp/:id')
-  async findOneByBootcampId(
+  async findManyByBootcampId(
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<FindOneByBootcampIdProgramsResponse> {
+  ): Promise<FindManyByBootcampIdProgramsResponse[]> {
     try {
-      return this.programsService.findOneByBootcampId(id);
+      return this.programsService.findManyByBootcampId(id);
     } catch (error) {
       throw new HttpException(
         'Error al buscar el programa',
