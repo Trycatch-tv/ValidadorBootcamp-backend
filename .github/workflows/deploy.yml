@@ -40,11 +40,19 @@ jobs:
       - name: Install SSH client
         run: sudo apt-get install -y sshpass
 
+      - name: Transfer Docker image to EC2
+        env:
+          SSHPASS: ${{ secrets.EC2_KEY }}
+        run: |
+          sshpass -e scp -o StrictHostKeyChecking=no my-app.tar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/my-app.tar
+
       - name: SSH and deploy
         env:
-          SSHPASS: ${{ secrets.EC2_KEY }} # Reemplaza con tu contraseña real
+          SSHPASS: ${{ secrets.EC2_KEY }}
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd /home/${{ secrets.EC2_USER }}
+            ls -l my-app.tar
             docker load -i my-app.tar
             docker stop my-app || true
             docker rm my-app || true
