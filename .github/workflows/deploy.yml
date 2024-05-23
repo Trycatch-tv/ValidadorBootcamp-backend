@@ -45,8 +45,8 @@ jobs:
           SSHPASS: ${{ secrets.EC2_KEY }} # Reemplaza con tu contraseña real
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            sudo docker load -i my-app.tar
-            sudo docker stop my-app || true
-            sudo docker rm my-app || true
-            sudo docker run -d --name my-app -p 80:3000 my-app:latest
+            docker load -i my-app.tar
+            docker stop my-app || true
+            docker rm my-app || true
+            docker run -d --name my-app -p 80:3000 my-app:latest
           EOF
