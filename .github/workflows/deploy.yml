@@ -3,17 +3,16 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main # Cambia esto a la rama que desees
+      - main # Cambia esto a tu rama deseada
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
+      - name: Set up Docker Buildx (optional for caching)
         uses: docker/setup-buildx-action@v1
 
       - name: Build Docker image
@@ -31,7 +30,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
@@ -39,14 +37,16 @@ jobs:
           name: docker-image
           path: .
 
+      - name: Install SSH client
+        run: sudo apt-get install -y sshpass
+
       - name: SSH and deploy
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          password: ${{ secrets.EC2_KEY }}
-          script: |
+        env:
+          SSHPASS: ${{ secrets.EC2_KEY }} # Reemplaza con tu contraseña real
+        run: |
+          sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             docker load -i my-app.tar
             docker stop my-app || true
             docker rm my-app || true
             docker run -d --name my-app -p 80:3000 my-app:latest
+          EOF
