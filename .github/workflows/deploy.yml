@@ -3,10 +3,10 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main
+      - main # Cambia esto a la rama que desees
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,14 +19,20 @@ jobs:
       - name: Build Docker image
         run: docker build -t my-app:latest .
 
+      - name: Save Docker image to file
+        run: docker save -o my-app.tar my-app:latest
+
       - name: Upload Docker image as artifact
         uses: actions/upload-artifact@v2
         with:
           name: docker-image
-          path: |
-            /home/runner/work/my-repo/my-repo  # Ajusta este path al path donde se encuentra tu Dockerfile
-            docker save -o my-app.tar my-app:latest
+          path: my-app.tar
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
