@@ -3,7 +3,8 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main
+      - main # Cambia esto a tu rama deseada
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -18,16 +19,16 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          region: ${{ secrets.AWS_REGION }}
 
       - name: Build Docker image
-        run: docker build -t glasscamp-backend:latest .
+        run: docker build -t my-app:latest .
 
       - name: Tag Docker image
-        run: docker tag glasscamp-backend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
+        run: docker tag my-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-repo/my-app:latest
 
       - name: Push Docker image to Amazon ECR
-        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
+        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-repo/my-app:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,8 +43,8 @@ jobs:
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
-            docker stop glasscamp-backend || true
-            docker rm glasscamp-backend || true
-            docker run -d --name glasscamp-backend -p 80:3000 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
+            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-repo/my-app:latest
+            docker stop my-app || true
+            docker rm my-app || true
+            docker run -d --name my-app -p 80:3000 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-repo/my-app:latest
           EOF
