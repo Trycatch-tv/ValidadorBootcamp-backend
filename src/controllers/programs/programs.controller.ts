@@ -19,6 +19,7 @@ import { FilesClient } from 'src/clients/files/files.client';
 import { CreateOneProgramDto } from 'src/dtos/programs/createOneProgram.dto';
 import { UploadContentProgramDto } from 'src/dtos/programs/uploadContentProgram.dto';
 import { FindAllProgramsResponse } from 'src/responses/programs/findAllPrograms.response';
+import { FindManyByBootcampIdProgramsResponse } from 'src/responses/programs/findManyByBootcampIdPrograms.response';
 import { FindOneByBootcampIdProgramsResponse } from 'src/responses/programs/findOneByBootcampIdPrograms.response';
 import { ProgramsBaseResponse } from 'src/responses/programs/programsBase.response';
 import { UploadContentProgram } from 'src/responses/programs/uploadContentProgram.response';
@@ -69,6 +70,7 @@ export class ProgramsController {
     }
   }
 
+  // TODO: Validar si se debe deprecar, no hace sentido tener un solo programa por bootcamp
   @ApiResponse({
     status: 200,
     description: 'Program found successfully',
@@ -80,6 +82,25 @@ export class ProgramsController {
   ): Promise<FindOneByBootcampIdProgramsResponse> {
     try {
       return this.programsService.findOneByBootcampId(id);
+    } catch (error) {
+      throw new HttpException(
+        'Error al buscar el programa',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Programs found successfully',
+    type: FindManyByBootcampIdProgramsResponse,
+  })
+  @Get('/bootcamp/many/:id')
+  async findManyByBootcampId(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<FindManyByBootcampIdProgramsResponse[]> {
+    try {
+      return this.programsService.findManyByBootcampId(id);
     } catch (error) {
       throw new HttpException(
         'Error al buscar el programa',

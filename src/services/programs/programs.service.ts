@@ -41,6 +41,16 @@ export class ProgramsService {
     }
   }
 
+  async findManyByBootcampId(id: string): Promise<ProgramEntity[]> {
+    try {
+      return await this.programsRepository.find({
+        where: { bootcamp_id: id, is_active: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async uploadContent(
     programId: string,
     contentUUID: string,
