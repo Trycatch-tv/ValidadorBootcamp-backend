@@ -17,9 +17,10 @@ jobs:
 
       - name: Log in to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
         with:
           region: ${{ secrets.AWS_REGION }}
+          mask-password: 'false'
 
       - name: Build Docker image
         run: docker build -t glasscamp-backend:latest .
