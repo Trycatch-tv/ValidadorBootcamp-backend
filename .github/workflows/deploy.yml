@@ -15,11 +15,10 @@ jobs:
       - name: Set up Docker Buildx (optional for caching)
         uses: docker/setup-buildx-action@v1
 
-      - name: Log in to Amazon ECR
+      - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          region: ${{ secrets.AWS_REGION }}
           mask-password: 'false'
 
       - name: Build Docker image
