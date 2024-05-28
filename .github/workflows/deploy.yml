@@ -20,7 +20,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
         with:
           mask-password: 'false'
-          region: us-west-2
+          aws-region: us-west-2
 
       - name: Build Docker image
         run: docker build -t glasscamp-backend:latest .
