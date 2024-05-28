@@ -5,13 +5,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
+import { extractTokenFromHeader } from 'src/utils/JWT/jwt.utils';
 
 @Injectable()
 export class UserAuthorizationMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: JwtService) {}
 
   async use(req: Request, res: Response, next: () => void) {
-    const token = await this.extractTokenFromHeader(req);
+    const token = await extractTokenFromHeader(req);
     if (!(token)) throw new UnauthorizedException('No token provided');
     try {
         await this.jwtService.verifyAsync(token, {
@@ -27,10 +28,4 @@ export class UserAuthorizationMiddleware implements NestMiddleware {
     }
   }
 
-  private async extractTokenFromHeader(
-    req: Request,
-  ): Promise<string | undefined> {
-    const [type, token] = req.headers['authorization']?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
-  }
 }
