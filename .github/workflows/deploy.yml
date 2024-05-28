@@ -53,8 +53,7 @@ jobs:
             echo "export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.bashrc
             echo "export AWS_REGION=${{ secrets.AWS_REGION }}" >> ~/.bashrc
             source ~/.bashrc
-            sudo apt-get update -y
-            sudo apt-get install -y awscli
+            apt-get install -y awscli
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
             docker stop glasscamp-backend || true
