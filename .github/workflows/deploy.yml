@@ -57,5 +57,18 @@ jobs:
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
             docker stop glasscamp-backend || true
             docker rm glasscamp-backend || true
-            docker run -d --name glasscamp-backend -p 80:3000 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
+            docker run -d \
+              --name glasscamp-backend \
+              -p 80:3000 \
+              -e DATABASE_HOST=${{ secrets.DATABASE_HOST }} \
+              -e DATABASE_PORT=${{ secrets.DATABASE_PORT }} \
+              -e DATABASE_USER=${{ secrets.DATABASE_USER }} \
+              -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
+              -e DATABASE_NAME=${{ secrets.DATABASE_NAME }} \
+              -e NODE_ENV=${{ secrets.ENVIRONMENT }} \
+              -e FILE_SERVICE_URL=${{ secrets.FILE_SERVICE_URL }} \
+              -e REVIEW_SERVICE_URL=${{ secrets.REVIEW_SERVICE_URL }} \
+              -e BOOTCAMP_SERVICE_URL=${{ secrets.BOOTCAMP_SERVICE_URL }} \
+              -e ASSESSEMENT_SERVICE_URL=${{ secrets.ASSESSMENT_SERVICE_URL }} \
+              ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
           EOF
