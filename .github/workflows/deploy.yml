@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -41,9 +42,14 @@ jobs:
           SSHPASS: ${{ secrets.EC2_KEY }}
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            # Clonar el repositorio en una ruta específica
+            git clone https://github.com/Trycatch-tv/ValidadorBootcamp-backend /home/${{ secrets.EC2_USER }}/app
+
+            cd /home/${{ secrets.EC2_USER }}/app
+
+            # Iniciar sesión en Amazon ECR
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
-            docker stop glasscamp-backend || true
-            docker rm glasscamp-backend || true
-            docker run -d --name glasscamp-backend -p 80:3000 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
+
+            # Actualizar la imagen del servicio backend y reiniciarlo sin afectar db
+            docker-compose up -d --no-deps --build backend
           EOF
