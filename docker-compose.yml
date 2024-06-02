@@ -16,7 +16,6 @@ services:
       - 5432:5432
 
   backend:
-    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
     container_name: backend
     environment:
       - DATABASE_HOST=db
