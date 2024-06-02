@@ -23,9 +23,7 @@ import { EnvironmentConfigModule } from '../environment-config/environment-confi
           password: environmentConfigService.DATABASE_PASSWORD,
           database: environmentConfigService.DATABASE_NAME,
           autoLoadEntities: true,
-          synchronize:
-            environmentConfigService.NODE_ENV ===
-            ('dev' satisfies EnvironmentConfig['NODE_ENV']),
+          synchronize: true,
         } as TypeOrmModuleOptions;
       },
     }),
