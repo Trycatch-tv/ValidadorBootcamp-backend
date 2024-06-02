@@ -26,7 +26,7 @@ services:
       - DATABASE_NAME=validador_bootcamps
       - FILE_SERVICE_URL=http://localhost:3000/files
       - REVIEW_SERVICE_URL=http://localhost:3000/reviews
-      - NODE_ENV=prod
+      - NODE_ENV=dev
     networks:
       - vnet-backend
     depends_on:
