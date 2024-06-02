@@ -62,5 +62,6 @@ jobs:
             aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
             # Actualizar la imagen del servicio backend y reiniciarlo sin afectar db
-            docker-compose up -d --no-deps --build bootcamp-backend
+            docker-compose down 
+            docker-compose up -d --no-deps --build 
           EOF
