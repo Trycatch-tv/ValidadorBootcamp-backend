@@ -55,11 +55,11 @@ jobs:
             cd /home/${{ secrets.EC2_USER }}/app
 
             # Exportar las variables de entorno
-            export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
-            export AWS_REGION=${{ secrets.AWS_REGION }}
+            # export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
+            # export AWS_REGION=${{ secrets.AWS_REGION }}
 
             # Iniciar sesión en Amazon ECR
-            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+            # aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
             # Actualizar la imagen del servicio backend y reiniciarlo sin afectar db
             docker-compose down 
