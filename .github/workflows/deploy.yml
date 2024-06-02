@@ -35,8 +35,8 @@ jobs:
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             # Clonar el repositorio en una ruta específica
-            git clone https://github.com/Trycatch-tv/ValidadorBootcamp-backend /home/${{ secrets.EC2_USER }}/app
-            rm -rf /home/${{ secrets.EC2_USER }}/app
+            git clone https://github.com/Trycatch-tv/ValidadorBootcamp-backend /home/${{ secrets.EC2_USER }}/app            
+            
             cd /home/${{ secrets.EC2_USER }}/app
             
             # Actualizar la imagen del servicio backend y reiniciarlo sin afectar db
