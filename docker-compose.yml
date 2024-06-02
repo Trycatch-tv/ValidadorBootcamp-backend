@@ -16,6 +16,7 @@ services:
       - 5432:5432
 
   backend:
+    build: .
     container_name: backend
     environment:
       - DATABASE_HOST=db
