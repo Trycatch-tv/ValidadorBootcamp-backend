@@ -15,7 +15,7 @@ services:
     ports:
       - 5432:5432
 
-  bootcamp-backend:
+  backend:
     image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
     container_name: backend
     environment:
