@@ -8,14 +8,25 @@ services:
       - POSTGRES_DB=validador_bootcamps
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=trycatch_tv23
+    volumes:
+      - db-data:/var/lib/postgresql/data
     networks:
       - vnet-backend
     ports:
       - 5432:5432
 
   bootcamp-backend:
-    build: .
-    container_name: bootcamp-backend
+    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
+    container_name: backend
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=admin
+      - DATABASE_PASSWORD=trycatch_tv23
+      - DATABASE_NAME=validador_bootcamps
+      - NODE_ENV=production
+      - FILE_SERVICE_URL=http://localhost:3000/files
+      - REVIEW_SERVICE_URL=http://localhost:3000/reviews
     networks:
       - vnet-backend
     depends_on:
@@ -26,3 +37,6 @@ services:
 networks:
   vnet-backend:
     driver: bridge
+
+volumes:
+  db-data:
