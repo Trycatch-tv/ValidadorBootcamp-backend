@@ -27,6 +27,7 @@ services:
       - NODE_ENV=production
       - FILE_SERVICE_URL=http://localhost:3000/files
       - REVIEW_SERVICE_URL=http://localhost:3000/reviews
+      - NODE_ENV=prod
     networks:
       - vnet-backend
     depends_on:
