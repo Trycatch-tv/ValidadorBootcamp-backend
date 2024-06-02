@@ -24,8 +24,6 @@ import { EnvironmentConfigModule } from '../environment-config/environment-confi
           database: environmentConfigService.DATABASE_NAME,
           autoLoadEntities: true,
           synchronize: true,
-          // environmentConfigService.NODE_ENV ===
-          // ('dev' satisfies EnvironmentConfig['NODE_ENV']),
         } as TypeOrmModuleOptions;
       },
     }),
