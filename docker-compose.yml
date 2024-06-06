@@ -4,10 +4,12 @@ services:
   db:
     image: postgres:14.2-alpine
     restart: always
+    env_file:
+      - .env
     environment:
-      - POSTGRES_DB=validador_bootcamps
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=trycatch_tv23
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
@@ -18,15 +20,17 @@ services:
   backend:
     build: .
     container_name: backend
+    env_file:
+      - .env
     environment:
-      - DATABASE_HOST=db
-      - DATABASE_PORT=5432
-      - DATABASE_USER=admin
-      - DATABASE_PASSWORD=trycatch_tv23
-      - DATABASE_NAME=validador_bootcamps
-      - FILE_SERVICE_URL=http://localhost:3000/files
-      - REVIEW_SERVICE_URL=http://localhost:3000/reviews
-      - NODE_ENV=dev
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - FILE_SERVICE_URL=${FILE_SERVICE_URL}
+      - REVIEW_SERVICE_URL=${REVIEW_SERVICE_URL}
+      - NODE_ENV=${NODE_ENV}
     networks:
       - vnet-backend
     depends_on:
