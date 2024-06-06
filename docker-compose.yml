@@ -18,7 +18,9 @@ services:
       - 5432:5432
 
   backend:
-    build: .
+    # build: .
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/glasscamp-backend:latest
+    # image: glasscamp-backend:latest
     container_name: backend
     env_file:
       - .env
