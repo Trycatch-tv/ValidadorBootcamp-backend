@@ -42,4 +42,5 @@ jobs:
             # Actualizar la imagen del servicio backend y reiniciarlo sin afectar db
             docker-compose down 
             docker-compose up -d --no-deps --build 
+            echo "Finalizado!"
           EOF
