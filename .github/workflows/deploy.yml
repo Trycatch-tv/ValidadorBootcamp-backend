@@ -33,8 +33,7 @@ jobs:
         env:
           SSHPASS: ${{ secrets.EC2_KEY }}
         run: |
-          sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            export NODE_ENV=dev
+          sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'            
             # Clonar el repositorio en una ruta específica
             git clone https://github.com/Trycatch-tv/ValidadorBootcamp-backend /home/${{ secrets.EC2_USER }}/app            
             
