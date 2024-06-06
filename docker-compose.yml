@@ -8,14 +8,25 @@ services:
       - POSTGRES_DB=validador_bootcamps
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=trycatch_tv23
+    volumes:
+      - db-data:/var/lib/postgresql/data
     networks:
       - vnet-backend
     ports:
       - 5432:5432
 
-  bootcamp-backend:
+  backend:
     build: .
-    container_name: bootcamp-backend
+    container_name: backend
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=admin
+      - DATABASE_PASSWORD=trycatch_tv23
+      - DATABASE_NAME=validador_bootcamps
+      - FILE_SERVICE_URL=http://localhost:3000/files
+      - REVIEW_SERVICE_URL=http://localhost:3000/reviews
+      - NODE_ENV=dev
     networks:
       - vnet-backend
     depends_on:
@@ -26,3 +37,6 @@ services:
 networks:
   vnet-backend:
     driver: bridge
+
+volumes:
+  db-data:

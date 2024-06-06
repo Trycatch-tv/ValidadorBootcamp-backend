@@ -3,32 +3,24 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main # Cambia esto a tu rama deseada
+      - main
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Docker Buildx (optional for caching)
         uses: docker/setup-buildx-action@v1
 
-      - name: Log in to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          region: ${{ secrets.AWS_REGION }}
-
-      - name: Build Docker image
-        run: docker build -t glasscamp-backend:latest .
-
-      - name: Tag Docker image
-        run: docker tag glasscamp-backend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
-
-      - name: Push Docker image to Amazon ECR
-        run: docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,9 +34,13 @@ jobs:
           SSHPASS: ${{ secrets.EC2_KEY }}
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
-            docker stop glasscamp-backend || true
-            docker rm glasscamp-backend || true
-            docker run -d --name glasscamp-backend -p 80:3000 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
+            export NODE_ENV=dev
+            # Clonar el repositorio en una ruta específica
+            git clone https://github.com/Trycatch-tv/ValidadorBootcamp-backend /home/${{ secrets.EC2_USER }}/app            
+            
+            cd /home/${{ secrets.EC2_USER }}/app
+            
+            # Actualizar la imagen del servicio backend y reiniciarlo sin afectar db
+            docker-compose down 
+            docker-compose up -d --no-deps --build 
           EOF

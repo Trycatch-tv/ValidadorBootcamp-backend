@@ -19,7 +19,7 @@ interface EnvironmentConfig {
   DATABASE_USER: string;
   DATABASE_PASSWORD: string;
   DATABASE_NAME: string;
-  NODE_ENV: 'dev' | 'prod';
+  NODE_ENV: 'dev' | 'production';
   FILE_SERVICE_URL: string;
   REVIEW_SERVICE_URL: string;
   BOOTCAMP_SERVICE_URL: string;
