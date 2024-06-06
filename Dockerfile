@@ -1,17 +1,22 @@
-FROM node:18-alpine
+# Base image
+FROM node:18
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-
+# Create app directory
 WORKDIR /home/node/app
 
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 
-USER node
+# Install app dependencies
+RUN npm install
 
-RUN npm cache clean --force && npm install
+# Bundle app source
+COPY . .
 
-COPY --chown=node:node . .
+# Creates a "dist" folder with the production build
+RUN npm run build
 
-EXPOSE 3000
+# Start the server using the production build
+CMD [ "node", "dist/main.js" ]
 
-CMD [ "npm", "run", "start" ]
+
