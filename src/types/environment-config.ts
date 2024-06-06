@@ -6,7 +6,7 @@ const environmentConfigSchema = Joi.object({
   DATABASE_USER: Joi.string().required(),
   DATABASE_PASSWORD: Joi.string().required(),
   DATABASE_NAME: Joi.string().required(),
-  NODE_ENV: Joi.string().valid('dev', 'prod').required(),
+  NODE_ENV: Joi.string().valid('dev', 'production').required(),
   FILE_SERVICE_URL: Joi.string().uri().required(),
   REVIEW_SERVICE_URL: Joi.string().uri().required(),
   BOOTCAMP_SERVICE_URL: Joi.string().uri().required(),
