@@ -1,6 +1,8 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 import { UsersController } from 'src/controllers/users/users.controller';
+import { UserAuthorizationMiddleware } from 'src/middlewares/users/authorization.middleware';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import { FeatureEntity } from 'src/models/feature/feature.entity';
 import { FileEntity } from 'src/models/file/file.entity';
@@ -31,7 +33,24 @@ import { UsersService } from 'src/services/users/users.service';
     ]),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, JwtService],
   exports: [TypeOrmModule],
 })
-export class UsersModule {}
+export class UsersModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(UserAuthorizationMiddleware)
+      .exclude(
+        { path: '/', method: RequestMethod.GET },
+        { path: '/:id', method: RequestMethod.GET },
+        { path: '/remove/:id', method: RequestMethod.DELETE },
+        { path: '/update/:id', method: RequestMethod.PUT },
+        { path: '/' , method: RequestMethod.POST},
+        { path: '/search/:key', method: RequestMethod.GET},
+        { path: '/signup', method: RequestMethod.POST },
+        { path: '/signin', method: RequestMethod.POST }
+      )
+      .forRoutes('users');
+  }
+}
+
