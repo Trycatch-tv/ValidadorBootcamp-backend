@@ -49,10 +49,15 @@ jobs:
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'            
             # Clonar el repositorio en una ruta específica
-            #git clone https://github.com/Trycatch-tv/ValidadorBootcamp-backend /home/${{ secrets.EC2_USER }}/app            
+            git clone https://github.com/Trycatch-tv/ValidadorBootcamp-backend /home/${{ secrets.EC2_USER }}/app            
             
-            #cd /home/${{ secrets.EC2_USER }}/app
+            cd /home/${{ secrets.EC2_USER }}/app
 
+            export AWS_REGION=${{ secrets.AWS_REGION }}
+            export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
+
+            # Iniciar sesión en Amazon ECR
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
             # Crear un archivo .env con las variables de entorno necesarias
             # echo "DATABASE_HOST=${{secrets.DATABASE_NAME}}" > .env
             # echo "DATABASE_PORT=${{secrets.DATABASE_PORT}}" >> .env
@@ -69,9 +74,9 @@ jobs:
             # echo "AWS_REGION=${{secrets.AWS_REGION}}" >> .env
             # Hacer pull de los cambios en la imagen docker
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
-            
+
             # Actualizar la imagen del servicio backend y reiniciarlo sin afectar db
             #docker-compose down 
-            #docker-compose up -d --no-deps --build 
+            docker-compose up -d --no-deps --build 
             echo "Finalizado!"
           EOF
