@@ -38,7 +38,7 @@ export class UserEntity {
   @Column({
     nullable: false,
     default: 'user',
-    enum: ['user', 'admin', 'bootcamp', 'bootcamps', 'companies', 'experts'],
+    enum: ['user', 'admin', 'bootcamp', 'company', 'expert'],
   })
   role: string;
 
