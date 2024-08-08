@@ -8,7 +8,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/dtos/users/createuser.dto';
 import { SigninDto } from 'src/dtos/users/signin.dto';
 import { SignupDto } from 'src/dtos/users/signup.dto';
@@ -20,6 +20,7 @@ import { RemoveOneUserResponse } from 'src/responses/users/removeOneUser.respons
 import { SearchUserResponse } from 'src/responses/users/searchUser.response';
 import { SigninResponse } from 'src/responses/users/signin.response';
 import { SignupResponse } from 'src/responses/users/signup.response';
+import { UnauthorizedResponse } from 'src/responses/users/unauthorized.response';
 import { UpdateOneUserResponse } from 'src/responses/users/updateOneUser.reposnse';
 import { UsersService } from 'src/services/users/users.service';
 
@@ -40,10 +41,16 @@ export class UsersController {
     return 'ok';
   }
 
+  @ApiSecurity('bearer')
   @ApiResponse({
     status: 200,
     description: 'Returns an array of users',
     type: [FindAllUsersResponse],
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Returns an unauthorized error message',
+    type: UnauthorizedResponse,
   })
   @Get('list')
   async findAll(): Promise<FindAllUsersResponse[]> {
