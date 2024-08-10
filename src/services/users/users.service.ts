@@ -10,6 +10,7 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    // private jwtService: JwtService,
   ) {}
 
   async findAll(): Promise<UserEntity[]> {
@@ -115,9 +116,6 @@ export class UsersService {
         email: user.email,
       });
       newUser.isLogedIn = await compareHash(user.password, newUser.password);
-      delete newUser.password;
-      delete newUser.created_at;
-      delete newUser.updated_at;
       return newUser;
     } catch (error) {
       throw Error('Error al iniciar sesión');

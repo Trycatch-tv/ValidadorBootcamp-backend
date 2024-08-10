@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersController } from 'src/controllers/users/users.controller';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
@@ -13,9 +15,16 @@ import { ReviewEntity } from 'src/models/review/review.entity';
 import { TestimonialEntity } from 'src/models/testimonial/testimonial.entity';
 import { UserEntity } from 'src/models/user/user.entity';
 import { UsersService } from 'src/services/users/users.service';
+import { jwtConstants } from 'src/utils/jwt/constants.jwt';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: jwtConstants.secret,
+
+      signOptions: { expiresIn: '60m' },
+    }),
     TypeOrmModule.forFeature([
       UserEntity,
       FileEntity,
@@ -32,6 +41,6 @@ import { UsersService } from 'src/services/users/users.service';
   ],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, JwtModule, PassportModule],
 })
 export class UsersModule {}
