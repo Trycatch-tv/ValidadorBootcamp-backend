@@ -12,4 +12,9 @@ export class SigninResponse {
   role: string;
   @ApiProperty({ example: 'true', description: 'User successfully logged' })
   isLogedIn?: boolean;
+  @ApiProperty({
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+    description: 'JWT Token',
+  })
+  token: string;
 }

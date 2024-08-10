@@ -7,12 +7,15 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/dtos/users/createuser.dto';
 import { SigninDto } from 'src/dtos/users/signin.dto';
 import { SignupDto } from 'src/dtos/users/signup.dto';
 import { UpdateUserDto } from 'src/dtos/users/updateuser.dto';
+import { AuthGuard } from 'src/guards/user/user.guard';
 import { CreateOneUserResponse } from 'src/responses/users/createOneUser.response';
 import { FindOneUserResponse } from 'src/responses/users/findOneUser.response';
 import { FindAllUsersResponse } from 'src/responses/users/getusers.response';
@@ -26,7 +29,10 @@ import { UsersService } from 'src/services/users/users.service';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {
     // this.usersService = usersService;
   }
 
@@ -40,6 +46,7 @@ export class UsersController {
     return 'ok';
   }
 
+  @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Returns an array of users',
@@ -137,6 +144,19 @@ export class UsersController {
   })
   @Post('signin')
   async signIn(@Body() signinDto: SigninDto): Promise<SigninResponse> {
-    return await this.usersService.signin(signinDto);
+    let signInServiceResponse = await this.usersService.signin(signinDto);
+    const payload = {
+      sub: signInServiceResponse.id,
+      username: signInServiceResponse.email,
+      role: signInServiceResponse.role,
+    };
+    signInServiceResponse.token = await this.jwtService.signAsync(payload);
+    let signInResponse = new SigninResponse();
+    signInResponse.id = signInServiceResponse.id;
+    signInResponse.email = signInServiceResponse.email;
+    signInResponse.role = signInServiceResponse.role;
+    signInResponse.isLogedIn = signInServiceResponse.isLogedIn;
+    signInResponse.token = signInServiceResponse.token;
+    return signInResponse;
   }
 }

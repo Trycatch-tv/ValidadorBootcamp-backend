@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
+import { PassportModule } from '@nestjs/passport';
 import { AppController } from '../controllers/app.controller';
 import { AppService } from '../services/app.service';
 import { environmentConfigSchema } from '../types/environment-config';
@@ -23,11 +24,11 @@ import { UsersModule } from './users/users.module';
     ReviewsModule,
     ProgramsModule,
     AssessmentsModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     ConfigModule.forRoot({
       envFilePath: ['.env.develop', '.env'],
       isGlobal: true,
       validationSchema: environmentConfigSchema,
-      // https://joi.dev/api/?v=17.9.1#anyvalidatevalue-options
       validationOptions: {
         allowUnknown: true,
       },
