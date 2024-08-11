@@ -11,10 +11,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/decorators/user/roles.decorator';
 import { CreateUserDto } from 'src/dtos/users/createuser.dto';
 import { SigninDto } from 'src/dtos/users/signin.dto';
 import { SignupDto } from 'src/dtos/users/signup.dto';
 import { UpdateUserDto } from 'src/dtos/users/updateuser.dto';
+import { Role } from 'src/enum/user/role.enum';
+import { RoleGuard } from 'src/guards/user/role.guard';
 import { AuthGuard } from 'src/guards/user/user.guard';
 import { CreateOneUserResponse } from 'src/responses/users/createOneUser.response';
 import { FindOneUserResponse } from 'src/responses/users/findOneUser.response';
@@ -46,7 +49,8 @@ export class UsersController {
     return 'ok';
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Returns an array of users',
