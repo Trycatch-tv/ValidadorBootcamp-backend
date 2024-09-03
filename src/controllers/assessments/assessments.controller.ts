@@ -8,12 +8,18 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { boolean } from 'joi';
 import { BootcampsClient } from 'src/clients/bottcamps/bootcamps.client';
+import { Roles } from 'src/decorators/user/roles.decorator';
 import { CreateOneAssessmentDto } from 'src/dtos/assessment/createOneAssessment.dto';
 import { UpdateManyAssessmentDto } from 'src/dtos/assessment/updateManyAssessment.dto';
+import { Role } from 'src/enum/user/role.enum';
+import { RoleGuard } from 'src/guards/user/role.guard';
+import { AuthGuard } from 'src/guards/user/user.guard';
 import { CreateOneAssessmentResponse } from 'src/responses/assessments/createAssessment.response';
 import CreateManyAssessmentResponse from 'src/responses/assessments/createManyAssessment.response';
 import { AssessmentsService } from 'src/services/assessments/assessments.service';
@@ -26,6 +32,8 @@ export class AssessmentsController {
     private readonly bootcampsClient: BootcampsClient,
   ) {}
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Create new assessment',
@@ -46,6 +54,8 @@ export class AssessmentsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Create new assessment',
@@ -77,6 +87,8 @@ export class AssessmentsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Get assessment by bootcamp id',
@@ -95,6 +107,8 @@ export class AssessmentsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiBody({ type: UpdateManyAssessmentDto })
   @ApiResponse({
     status: 200,

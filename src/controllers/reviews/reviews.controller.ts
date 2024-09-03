@@ -7,9 +7,15 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/decorators/user/roles.decorator';
 import { CreateOneReviewDto } from 'src/dtos/review/createOneReview.dto';
+import { Role } from 'src/enum/user/role.enum';
+import { RoleGuard } from 'src/guards/user/role.guard';
+import { AuthGuard } from 'src/guards/user/user.guard';
 import { CreateOneReviewResponse } from 'src/responses/reviews/createOneReview.response';
 import { FindAllReviewsResponse } from 'src/responses/reviews/findAllReviews.response';
 import { ReviewsService } from 'src/services/reviews/reviews.service';
@@ -19,6 +25,8 @@ import { ReviewsService } from 'src/services/reviews/reviews.service';
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.User)
   @ApiBody({ type: CreateOneReviewDto })
   @ApiResponse({
     status: 201,
@@ -36,6 +44,8 @@ export class ReviewsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'List all reviews',
@@ -50,6 +60,8 @@ export class ReviewsController {
     }
   }
 
+  // TODO: El despliegue de este servicio debe ser privado, y adicionalmente contar con
+  // un mecanismo de autenticación para comunicarse con los otros servicios.
   @ApiResponse({
     status: 200,
     description: 'Get score average by bootcamp id',

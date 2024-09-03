@@ -9,15 +9,21 @@ import {
   Post,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { FilesClient } from 'src/clients/files/files.client';
+import { Roles } from 'src/decorators/user/roles.decorator';
 import { CreateOneProgramDto } from 'src/dtos/programs/createOneProgram.dto';
 import { UploadContentProgramDto } from 'src/dtos/programs/uploadContentProgram.dto';
+import { Role } from 'src/enum/user/role.enum';
+import { RoleGuard } from 'src/guards/user/role.guard';
+import { AuthGuard } from 'src/guards/user/user.guard';
 import { FindAllProgramsResponse } from 'src/responses/programs/findAllPrograms.response';
 import { FindManyByBootcampIdProgramsResponse } from 'src/responses/programs/findManyByBootcampIdPrograms.response';
 import { FindOneByBootcampIdProgramsResponse } from 'src/responses/programs/findOneByBootcampIdPrograms.response';
@@ -33,6 +39,8 @@ export class ProgramsController {
     private readonly filesClient: FilesClient,
   ) {}
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiBody({ type: CreateOneProgramDto })
   @ApiResponse({
     status: 200,
@@ -53,6 +61,8 @@ export class ProgramsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Programs found successfully',
@@ -109,6 +119,8 @@ export class ProgramsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiBody({ type: UploadContentProgramDto })
   @ApiResponse({
     status: 200,
