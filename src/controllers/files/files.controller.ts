@@ -18,6 +18,8 @@ import { FilesService } from 'src/services/files/files.service';
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
+  // TODO: El despliegue de este servicio debe ser privado, y adicionalmente contar con
+  // un mecanismo de autenticación para comunicarse con los otros servicios.
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadOne(
@@ -31,7 +33,8 @@ export class FilesController {
       throw err;
     }
   }
-
+  // TODO: El despliegue de este servicio debe ser privado, y adicionalmente contar con
+  // un mecanismo de autenticación para comunicarse con los otros servicios.
   @Get('/:id')
   async findOne(@Res() res: Response, @Param('id', ParseUUIDPipe) id: string) {
     try {

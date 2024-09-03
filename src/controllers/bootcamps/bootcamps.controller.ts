@@ -11,6 +11,7 @@ import {
   Put,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -19,11 +20,15 @@ import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { AssessmentsClient } from 'src/clients/assessments/assessments.client';
 import { FilesClient } from 'src/clients/files/files.client';
+import { Roles } from 'src/decorators/user/roles.decorator';
 import { CreateBootcampDto } from 'src/dtos/bootcamps/createBootcamp.dto';
 import { UpdateBootcampDto } from 'src/dtos/bootcamps/updateBootcamp.dto';
 import { UpdateScoreBootcampDto } from 'src/dtos/bootcamps/updateScoreBoocamp.dto';
 import { UploadAvatarBootcampDto } from 'src/dtos/bootcamps/uploadAvatarBootcamp.dto';
 import { UploadTermsAndConditionsBootcampDto } from 'src/dtos/bootcamps/uploadTermsAndConditionsBootcamp.dto';
+import { Role } from 'src/enum/user/role.enum';
+import { RoleGuard } from 'src/guards/user/role.guard';
+import { AuthGuard } from 'src/guards/user/user.guard';
 import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import { CreateOneBootcampResponse } from 'src/responses/bootcamps/createOneBootcamp.response';
 import { findAllBootcampsResponse } from 'src/responses/bootcamps/findAllBootcamp.response';
@@ -63,6 +68,8 @@ export class BootcampsController {
     return await this.bootcampsService.findAll();
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiBody({ type: CreateBootcampDto })
   @ApiResponse({
     status: 200,
@@ -100,6 +107,8 @@ export class BootcampsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiBody({ type: CreateBootcampDto })
   @ApiResponse({
     status: 200,
@@ -138,6 +147,8 @@ export class BootcampsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Remove bootcamp by id.',
@@ -157,6 +168,8 @@ export class BootcampsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiBody({ type: UploadAvatarBootcampDto })
   @ApiResponse({
     status: 200,
@@ -230,6 +243,8 @@ export class BootcampsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiBody({ type: UploadTermsAndConditionsBootcampDto })
   @ApiResponse({
     status: 200,
@@ -303,6 +318,8 @@ export class BootcampsController {
     }
   }
 
+  // TODO: Validar si el flujo de calcular el score de un bootcamp
+  // lo utiliza, si no, los permisos deben ser del rol admin
   @ApiBody({ type: UpdateScoreBootcampDto })
   @ApiResponse({
     status: 200,
@@ -365,6 +382,8 @@ export class BootcampsController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Returns bootcamp score average by id',

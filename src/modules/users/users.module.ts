@@ -41,6 +41,6 @@ import { jwtConstants } from 'src/utils/jwt/constants.jwt';
   ],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [TypeOrmModule, JwtModule, PassportModule],
+  exports: [TypeOrmModule],
 })
 export class UsersModule {}
