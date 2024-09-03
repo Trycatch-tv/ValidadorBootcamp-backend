@@ -1,5 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AssessmentsClient } from 'src/clients/assessments/assessments.client';
 import { FilesClient } from 'src/clients/files/files.client';
@@ -18,10 +20,17 @@ import { TestimonialEntity } from 'src/models/testimonial/testimonial.entity';
 import { UserEntity } from 'src/models/user/user.entity';
 import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
 import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
+import { jwtConstants } from 'src/utils/jwt/constants.jwt';
 
 @Module({
   imports: [
     HttpModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: jwtConstants.secret,
+
+      signOptions: { expiresIn: '60m' },
+    }),
     TypeOrmModule.forFeature([
       BootcampEntity,
       UserEntity,

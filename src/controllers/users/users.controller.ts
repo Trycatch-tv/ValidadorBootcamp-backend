@@ -61,6 +61,10 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
+  // TODO: Se debe crear un endpoint adicional para obtener
+  // un usuario por id utilizando el JWT y no el parámetro en la petición.
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Returns a user by id',
@@ -73,6 +77,8 @@ export class UsersController {
     return await this.usersService.findOne(id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Remove an user by id',
@@ -85,6 +91,8 @@ export class UsersController {
     return await this.usersService.removeOne(id);
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin, Role.User)
   @ApiBody({ type: UpdateUserDto })
   @ApiResponse({
     status: 200,
@@ -99,6 +107,8 @@ export class UsersController {
     return await this.usersService.updateOne(id, user);
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({
     status: 200,
@@ -114,6 +124,8 @@ export class UsersController {
     }
   }
 
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description:
