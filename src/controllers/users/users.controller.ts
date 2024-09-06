@@ -61,8 +61,10 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  // TODO: Se debe crear un endpoint adicional para obtener
-  // un usuario por id utilizando el JWT y no el parámetro en la petición.
+  // TODO: Agregar el rol de usuario y validar que si la petición la hace un admin
+  // pueda ver la información, si la hace un usuario solo pueda ver su información
+  // comparando el id del token con el id del usuario que se quiere ver, si no,
+  // lanzar un error 403 Forbidden
   @UseGuards(AuthGuard, RoleGuard)
   @Roles(Role.Admin)
   @ApiResponse({
