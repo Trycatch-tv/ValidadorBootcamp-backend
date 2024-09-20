@@ -5,7 +5,6 @@ import { RouterModule } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 import { AppController } from '../controllers/app.controller';
 import { AppService } from '../services/app.service';
-import { environmentConfigSchema } from '../types/environment-config';
 import { AssessmentsModule } from './assessments/assessments.module';
 import { BootcampsModule } from './bootcamps/bootcamps.module';
 import { FilesModule } from './files/files.module';
@@ -28,10 +27,6 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       envFilePath: ['.env.develop', '.env'],
       isGlobal: true,
-      validationSchema: environmentConfigSchema,
-      validationOptions: {
-        allowUnknown: true,
-      },
     }),
     RouterModule.register([
       {

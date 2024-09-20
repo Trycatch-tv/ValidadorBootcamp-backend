@@ -19,7 +19,6 @@ import { ReviewEntity } from 'src/models/review/review.entity';
 import { TestimonialEntity } from 'src/models/testimonial/testimonial.entity';
 import { UserEntity } from 'src/models/user/user.entity';
 import { BootcampsService } from 'src/services/bootcamps/bootcamps.service';
-import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
 import { jwtConstants } from 'src/utils/jwt/constants.jwt';
 
 @Module({
@@ -52,7 +51,6 @@ import { jwtConstants } from 'src/utils/jwt/constants.jwt';
     FilesClient,
     ReviewsClient,
     AssessmentsClient,
-    EnvironmentConfigService,
   ],
   exports: [TypeOrmModule],
 })

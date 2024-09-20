@@ -24,7 +24,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@aws-amplify/backend": "^0.5.5",
+    "@aws-amplify/backend": "^1.2.2",
     "@aws-amplify/cli": "^12.8.2",
     "@babel/core": "^7.23.5",
     "@babel/preset-env": "^7.23.5",
@@ -69,7 +69,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "babel-cli": "^6.26.0",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",

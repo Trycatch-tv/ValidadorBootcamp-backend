@@ -7,7 +7,6 @@ import { BootcampsClient } from 'src/clients/bottcamps/bootcamps.client';
 import { AssessmentsController } from 'src/controllers/assessments/assessments.controller';
 import { AssessmentEntity } from 'src/models/assessment/assessment.entity';
 import { AssessmentsService } from 'src/services/assessments/assessments.service';
-import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
 import { jwtConstants } from 'src/utils/jwt/constants.jwt';
 
 @Module({
@@ -22,6 +21,6 @@ import { jwtConstants } from 'src/utils/jwt/constants.jwt';
     TypeOrmModule.forFeature([AssessmentEntity]),
   ],
   controllers: [AssessmentsController],
-  providers: [AssessmentsService, BootcampsClient, EnvironmentConfigService],
+  providers: [AssessmentsService, BootcampsClient],
 })
 export class AssessmentsModule {}
