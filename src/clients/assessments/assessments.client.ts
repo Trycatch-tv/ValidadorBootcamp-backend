@@ -1,13 +1,12 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AssessmentEntity } from 'src/models/assessment/assessment.entity';
-import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
+import { envs } from 'src/types/environment-config';
 
 @Injectable()
 export class AssessmentsClient {
   constructor(
     private readonly httpService: HttpService,
-    private readonly environmentConfigService: EnvironmentConfigService,
   ) {}
 
   async getAssessmentByBootcampId(
@@ -16,7 +15,7 @@ export class AssessmentsClient {
     try {
       const response = await this.httpService
         .get(
-          `${this.environmentConfigService.ASSESSEMENT_SERVICE_URL}/bootcamp/${bootcampId}`,
+          `${envs.ASSESSMENT_SERVICE_URL}/bootcamp/${bootcampId}`,
         )
         .toPromise();
       return response.data;

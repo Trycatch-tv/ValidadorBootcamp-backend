@@ -6,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FilesClient } from 'src/clients/files/files.client';
 import { ProgramsController } from 'src/controllers/programs/programs.controller';
 import { ProgramEntity } from 'src/models/program/program.entity';
-import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
 import { ProgramsService } from 'src/services/programs/programs.service';
 import { jwtConstants } from 'src/utils/jwt/constants.jwt';
 
@@ -22,7 +21,7 @@ import { jwtConstants } from 'src/utils/jwt/constants.jwt';
     TypeOrmModule.forFeature([ProgramEntity]),
   ],
   controllers: [ProgramsController],
-  providers: [ProgramsService, FilesClient, EnvironmentConfigService],
+  providers: [ProgramsService, FilesClient],
   exports: [TypeOrmModule],
 })
 export class ProgramsModule {}

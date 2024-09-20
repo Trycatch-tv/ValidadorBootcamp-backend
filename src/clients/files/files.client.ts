@@ -2,13 +2,12 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import * as FormData from 'form-data';
-import { EnvironmentConfigService } from 'src/services/environment-config/environment-config.service';
+import { envs } from 'src/types/environment-config';
 
 @Injectable()
 export class FilesClient {
   constructor(
     private readonly httpService: HttpService,
-    private readonly environmentConfigService: EnvironmentConfigService,
   ) {}
 
   async uploadOne(file: Express.Multer.File | any) {
@@ -22,7 +21,7 @@ export class FilesClient {
 
       const options = {
         method: 'POST',
-        url: `${this.environmentConfigService.FILE_SERVICE_URL}/upload`,
+        url: `${envs.FILE_SERVICE_URL}/upload`,
         headers: formData.getHeaders(),
         data: formData,
       } as const;
@@ -37,7 +36,7 @@ export class FilesClient {
   async findOne(id: string) {
     try {
       return this.httpService.get(
-        `${this.environmentConfigService.FILE_SERVICE_URL}/${id}`,
+        `${envs.FILE_SERVICE_URL}/${id}`,
         { responseType: 'arraybuffer' },
       );
     } catch (err) {
