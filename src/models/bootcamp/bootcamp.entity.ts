@@ -1,5 +1,6 @@
 import { genereUUID } from 'src/utils/uuid/uuid.utils';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -9,6 +10,11 @@ import {
 
 @Entity('bootcamps')
 export class BootcampEntity {
+  @BeforeInsert()
+  setId() {
+    this.id = genereUUID();
+  }
+
   @PrimaryColumn({ unique: true, default: genereUUID() })
   id: string;
 
