@@ -12,11 +12,17 @@ export class AssessmentsClient {
 
   async getAssessmentByBootcampId(
     bootcampId: string,
+    token: string,
   ): Promise<AssessmentEntity[]> {
     try {
       const response = await this.httpService
         .get(
           `${this.environmentConfigService.ASSESSEMENT_SERVICE_URL}/bootcamp/${bootcampId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
         )
         .toPromise();
       return response.data;

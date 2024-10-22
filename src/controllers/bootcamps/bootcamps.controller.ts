@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Req,
   Res,
   UploadedFile,
   UseGuards,
@@ -366,10 +367,15 @@ export class BootcampsController {
   @Get('score/:id')
   async getScoreAverage(
     @Param('id', ParseUUIDPipe) id: string,
+    @Req() request: Request,
   ): Promise<BootcampEntity> {
     try {
+      const authorizationToken = request.headers['authorization'].split(' ')[1];
       const getAssessmentByBootcampIdResponse =
-        await this.assessmentsClient.getAssessmentByBootcampId(id);
+        await this.assessmentsClient.getAssessmentByBootcampId(
+          id,
+          authorizationToken,
+        );
       return await this.bootcampsService.getScoreAverage(
         id,
         getAssessmentByBootcampIdResponse,
@@ -390,10 +396,17 @@ export class BootcampsController {
     type: Number,
   })
   @Post('score/recalculate/:id')
-  async recalculateScoreAverage(@Param('id', ParseUUIDPipe) id: string) {
+  async recalculateScoreAverage(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() request: Request,
+  ) {
     try {
+      const authorizationToken = request.headers['authorization'].split(' ')[1];
       const getAssessmentByBootcampIdResponse =
-        await this.assessmentsClient.getAssessmentByBootcampId(id);
+        await this.assessmentsClient.getAssessmentByBootcampId(
+          id,
+          authorizationToken,
+        );
       return await this.bootcampsService.recalculateScoreAverage(
         id,
         getAssessmentByBootcampIdResponse,
