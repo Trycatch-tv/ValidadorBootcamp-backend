@@ -97,7 +97,9 @@ export class BootcampsController {
     type: [FindOneBootcampsResponse],
   })
   @Get('/:id')
-  async findOne(id: string): Promise<FindOneBootcampsResponse> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<FindOneBootcampsResponse> {
     try {
       return await this.bootcampsService.findOne(id);
     } catch (error) {
