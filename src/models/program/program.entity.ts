@@ -36,6 +36,12 @@ export class ProgramEntity {
   @Column({ nullable: true, default: null })
   content: string;
 
+  @Column({ nullable: true, default: 0 })
+  price: number;
+
+  @Column({ nullable: true, default: 'COP' })
+  currency: string;
+
   @Column({ nullable: false, default: true })
   is_active: boolean;
 

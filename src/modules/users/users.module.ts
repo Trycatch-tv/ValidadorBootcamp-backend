@@ -7,7 +7,6 @@ import { BootcampEntity } from 'src/models/bootcamp/bootcamp.entity';
 import { FeatureEntity } from 'src/models/feature/feature.entity';
 import { FileEntity } from 'src/models/file/file.entity';
 import { OfficeEntity } from 'src/models/office/office.entity';
-import { PricingProgramEntity } from 'src/models/program/pricing/pricing.program.entity';
 import { ProgramEntity } from 'src/models/program/program.entity';
 import { SegmentSectionEntity } from 'src/models/program/segment/section/section.segment.program.entity';
 import { SegmentProgramEntity } from 'src/models/program/segment/segment.program.entity';
@@ -32,7 +31,6 @@ import { jwtConstants } from 'src/utils/jwt/constants.jwt';
       FeatureEntity,
       OfficeEntity,
       ProgramEntity,
-      PricingProgramEntity,
       SegmentProgramEntity,
       SegmentSectionEntity,
       ReviewEntity,
