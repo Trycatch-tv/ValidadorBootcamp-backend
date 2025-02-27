@@ -14,10 +14,10 @@ export class CreateOneAssessmentDto {
   category_id: number;
 
   @ApiProperty({
-    example: 1,
+    example: 'RV01',
     description: 'Criteria ID',
   })
-  criteria_id: number;
+  criteria_id: string;
 
   @ApiProperty({
     example: 4,

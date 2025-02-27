@@ -337,6 +337,7 @@ export class BootcampsController {
     try {
       return await this.bootcampsService.updateScore(id, score);
     } catch (error) {
+      console.log(error, 'score');
       throw new HttpException(
         'Error al actualizar el score del bootcamp',
         HttpStatus.BAD_REQUEST,
@@ -366,6 +367,8 @@ export class BootcampsController {
     description: 'Returns bootcamp score average by id',
     type: Number,
   })
+  // @UseGuards(AuthGuard, RoleGuard)
+  // @ApiBearerAuth()
   @Get('score/:id')
   async getScoreAverage(
     @Param('id', ParseUUIDPipe) id: string,
@@ -378,6 +381,7 @@ export class BootcampsController {
           id,
           authorizationToken,
         );
+      // TODO: El error está aquí.
       return await this.bootcampsService.getScoreAverage(
         id,
         getAssessmentByBootcampIdResponse,

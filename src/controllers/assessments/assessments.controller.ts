@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpException,
   HttpStatus,
   Param,
@@ -15,11 +16,11 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { boolean } from 'joi';
 import { BootcampsClient } from 'src/clients/bottcamps/bootcamps.client';
 import { Roles } from 'src/decorators/user/roles.decorator';
-import { CreateOneAssessmentDto } from 'src/dtos/assessment/createOneAssessment.dto';
 import { UpdateManyAssessmentDto } from 'src/dtos/assessment/updateManyAssessment.dto';
 import { Role } from 'src/enum/user/role.enum';
 import { RoleGuard } from 'src/guards/user/role.guard';
 import { AuthGuard } from 'src/guards/user/user.guard';
+import { AssessmentEntity } from 'src/models/assessment/assessment.entity';
 import { CreateOneAssessmentResponse } from 'src/responses/assessments/createAssessment.response';
 import CreateManyAssessmentResponse from 'src/responses/assessments/createManyAssessment.response';
 import { AssessmentsService } from 'src/services/assessments/assessments.service';
@@ -39,7 +40,7 @@ export class AssessmentsController {
     description: 'Create new assessment',
     type: CreateOneAssessmentResponse,
   })
-  @ApiBody({ type: CreateOneAssessmentResponse })
+  // @ApiBody({ type: CreateOneAssessmentResponse })
   @Post()
   async createOne(
     @Body() createAssessmentDto: CreateOneAssessmentResponse,
@@ -61,18 +62,32 @@ export class AssessmentsController {
     description: 'Create new assessment',
     type: CreateOneAssessmentResponse,
   })
-  @ApiBody({ type: CreateOneAssessmentResponse })
+  @ApiBody({ type: Array<CreateOneAssessmentResponse> })
   @Post('many/:bootcampId')
   async createMany(
     @Param('bootcampId', ParseUUIDPipe) bootcampId: string,
-    @Body() createAssessmentDto: CreateOneAssessmentDto[],
+    @Body() createAssessmentDto: Partial<AssessmentEntity[]>,
+    @Headers('Authorization') token: string,
   ): Promise<CreateManyAssessmentResponse> {
     try {
       // Almacenar el assessment
       await this.assessmentsService.createMany(bootcampId, createAssessmentDto);
+
       // BoocampClient: Obtener el score del bootcamp -> bootcamp_id
-      const bootcampScoreAverage =
-        await this.bootcampsClient.getScoreAverage(bootcampId);
+      //TODO: El error que tenemos es que no está consultando el score del bootcamp, presuntamente es por el token para hacer la petición desde el client.
+      let bootcampScoreAverage;
+      try {
+        bootcampScoreAverage = await this.bootcampsClient.getScoreAverage(
+          bootcampId,
+          token,
+        );
+      } catch (error) {
+        console.log('Error getting bootcamp score', error);
+        throw new HttpException(
+          'Error getting bootcamp score',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
 
       // BoocampClient: Actualizar el score del bootcamp -> bootcamp_id
       return await this.bootcampsClient.updateScore(
@@ -87,19 +102,23 @@ export class AssessmentsController {
     }
   }
 
-  @UseGuards(AuthGuard, RoleGuard)
+  // @UseGuards(AuthGuard, RoleGuard)
   @Roles(Role.Admin)
+  // @ApiBearerAuth()
   @ApiResponse({
     status: 200,
-    description: 'Get assessment by bootcamp id',
+    description: 'Get assessments by bootcamp id',
   })
-  @Get('bootcamp/:bootcampId')
-  async getAssessmentByBootcampId(bootcampId: string): Promise<any> {
+  @Get('bootcamp/many/:bootcampId')
+  async getAssessmentByBootcampId(
+    @Param('bootcampId', ParseUUIDPipe) bootcampId: string,
+  ): Promise<any> {
     try {
       return await this.assessmentsService.getAssessmentByBootcampId(
         bootcampId,
       );
     } catch (error) {
+      console.log('Error getting assessment', error);
       throw new HttpException(
         'Error getting assessment',
         HttpStatus.BAD_REQUEST,

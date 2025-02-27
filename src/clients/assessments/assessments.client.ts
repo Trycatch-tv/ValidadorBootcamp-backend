@@ -17,7 +17,7 @@ export class AssessmentsClient {
     try {
       const response = await this.httpService
         .get(
-          `${this.environmentConfigService.ASSESSEMENT_SERVICE_URL}/bootcamp/${bootcampId}`,
+          `${this.environmentConfigService.ASSESSEMENT_SERVICE_URL}/bootcamp/many/${bootcampId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

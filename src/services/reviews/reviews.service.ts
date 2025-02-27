@@ -44,6 +44,9 @@ export class ReviewsService {
       const reviews = await this.reviewRepository.find({
         where: { bootcamp_id: bootcampId, is_active: true },
       });
+      if (reviews.length === 0) {
+        return 0;
+      }
       const scoreAverage =
         reviews.reduce((acc, review) => acc + review.score, 0) / reviews.length;
       return Number(scoreAverage.toFixed(2));
