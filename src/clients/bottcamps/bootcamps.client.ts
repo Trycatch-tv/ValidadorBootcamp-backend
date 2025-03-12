@@ -47,11 +47,20 @@ export class BootcampsClient {
     }
   }
 
-  async recalculateScoreAverage(bootcampId: string): Promise<BootcampEntity> {
+  async recalculateScoreAverage(
+    bootcampId: string,
+    token: string,
+  ): Promise<BootcampEntity> {
     try {
       const response = await this.httpService
         .post(
           `${this.environmentConfigService.BOOTCAMP_SERVICE_URL}/score/recalculate/${bootcampId}`,
+          {},
+          {
+            headers: {
+              Authorization: token,
+            },
+          },
         )
         .toPromise();
       return response.data;

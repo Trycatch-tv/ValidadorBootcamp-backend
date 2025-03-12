@@ -74,22 +74,26 @@ export class AssessmentsService {
     assessments: Partial<AssessmentEntity>[],
   ): Promise<boolean> {
     try {
-      // Agregar el bootcampId a cada objeto de assessment
-      const assessmentsWithBootcampId = assessments.map((assessment) => ({
-        ...assessment,
-        bootcamp_id: bootcampId,
-      }));
-
-      // Usar upsert para insertar o actualizar en función de los campos únicos
-      await this.assessmentsRepository.upsert(assessmentsWithBootcampId, {
-        conflictPaths: ['bootcamp_id', 'criteria_id', 'category_id', 'weight'],
-        skipUpdateIfNoValuesChanged: true, // Opcional: evita actualizaciones innecesarias
+      const getBootcampAssessments =
+        await this.getAssessmentByBootcampId(bootcampId);
+      // actualizar el weight de los assessments en el getBootcampAssessments
+      const assessmentsUpdated = getBootcampAssessments.map((assessment) => {
+        const updatedAssessment = assessments.find(
+          (updatedAssessment) =>
+            updatedAssessment.criteria_id === assessment.criteria_id,
+        );
+        if (updatedAssessment) {
+          assessment.weight = updatedAssessment.weight;
+        }
+        return assessment;
       });
+
+      // actualizar los assessments
+      await this.assessmentsRepository.save(assessmentsUpdated);
 
       // Confirmación de que los criterios fueron actualizados o insertados
       return true;
     } catch (error) {
-      console.error(error);
       return false;
     }
   }

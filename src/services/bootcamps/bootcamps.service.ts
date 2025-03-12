@@ -167,7 +167,6 @@ export class BootcampsService {
       bootcamp.score = score;
       return await this.bootcampRepository.save(bootcamp);
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -432,10 +431,8 @@ export class BootcampsService {
 
       // Actualizar score del bootcamp (Sin almacenarlo en la base de datos)
       bootcamp.score = scoreTotal;
-      console.log('Bootcamp', bootcamp);
       return bootcamp;
     } catch (error) {
-      console.log('Error', error);
       throw error;
     }
   }

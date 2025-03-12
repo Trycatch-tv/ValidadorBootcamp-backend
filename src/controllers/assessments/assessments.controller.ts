@@ -74,7 +74,6 @@ export class AssessmentsController {
       await this.assessmentsService.createMany(bootcampId, createAssessmentDto);
 
       // BoocampClient: Obtener el score del bootcamp -> bootcamp_id
-      //TODO: El error que tenemos es que no está consultando el score del bootcamp, presuntamente es por el token para hacer la petición desde el client.
       let bootcampScoreAverage;
       try {
         bootcampScoreAverage = await this.bootcampsClient.getScoreAverage(
@@ -82,7 +81,6 @@ export class AssessmentsController {
           token,
         );
       } catch (error) {
-        console.log('Error getting bootcamp score', error);
         throw new HttpException(
           'Error getting bootcamp score',
           HttpStatus.BAD_REQUEST,
@@ -118,7 +116,6 @@ export class AssessmentsController {
         bootcampId,
       );
     } catch (error) {
-      console.log('Error getting assessment', error);
       throw new HttpException(
         'Error getting assessment',
         HttpStatus.BAD_REQUEST,
@@ -138,6 +135,7 @@ export class AssessmentsController {
   async updateManyByBootcampId(
     @Param('id', ParseUUIDPipe) bootcampId: string,
     @Body() assessments: UpdateManyAssessmentDto[],
+    @Headers('Authorization') token: string,
   ): Promise<boolean> {
     try {
       // Obtener la respuesta de la actualización de los assessments del services
@@ -148,7 +146,7 @@ export class AssessmentsController {
         );
       // Si la respuesta es verdadera recalcular el score del bootcamp
       if (isAllAssessmentUpdated) {
-        await this.bootcampsClient.recalculateScoreAverage(bootcampId);
+        await this.bootcampsClient.recalculateScoreAverage(bootcampId, token);
         return true;
       } else {
         return false;
