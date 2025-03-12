@@ -167,7 +167,6 @@ export class BootcampsService {
       bootcamp.score = score;
       return await this.bootcampRepository.save(bootcamp);
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -371,7 +370,7 @@ export class BootcampsService {
         );
         // Identificar el valor del criterio
         const getCriteriaWeight = getCategory.criteriaParams.find(
-          (criteriaWeight) => criteriaWeight.id === criteria.criteria_id,
+          (criteriaWeight) => criteriaWeight.code === criteria.criteria_id,
         );
         const criteriaWeight = getCriteriaWeight.weight;
         // Calcular el score = peso del criterio evaluado * valor del criterio

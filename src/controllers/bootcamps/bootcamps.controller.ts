@@ -366,6 +366,8 @@ export class BootcampsController {
     description: 'Returns bootcamp score average by id',
     type: Number,
   })
+  // @UseGuards(AuthGuard, RoleGuard)
+  // @ApiBearerAuth()
   @Get('score/:id')
   async getScoreAverage(
     @Param('id', ParseUUIDPipe) id: string,
@@ -390,8 +392,9 @@ export class BootcampsController {
     }
   }
 
-  @UseGuards(AuthGuard, RoleGuard)
-  @Roles(Role.Admin)
+  // @UseGuards(AuthGuard, RoleGuard)
+  // @Roles(Role.Admin)
+  // @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'Returns bootcamp score average by id',

@@ -6,7 +6,7 @@ export class BaseAssessmentResponse {
     example: '123e4567-e89b-12d3-a456-426614174000',
     description: 'Assessment ID',
   })
-  id: string;
+  id?: string;
 
   @ApiProperty({
     type: String,
@@ -25,7 +25,7 @@ export class BaseAssessmentResponse {
     example: 3,
     description: 'Criteria ID',
   })
-  criteria_id: number;
+  criteria_id: string;
 
   @ApiProperty({
     type: Number,

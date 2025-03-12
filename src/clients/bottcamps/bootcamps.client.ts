@@ -10,11 +10,16 @@ export class BootcampsClient {
     private readonly environmentConfigService: EnvironmentConfigService,
   ) {}
 
-  async getScoreAverage(bootcampId: string): Promise<number> {
+  async getScoreAverage(bootcampId: string, token: string): Promise<number> {
     try {
       const response = await this.httpService
         .get(
           `${this.environmentConfigService.BOOTCAMP_SERVICE_URL}/score/${bootcampId}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          },
         )
         .toPromise();
       return response.data.score;
@@ -42,11 +47,20 @@ export class BootcampsClient {
     }
   }
 
-  async recalculateScoreAverage(bootcampId: string): Promise<BootcampEntity> {
+  async recalculateScoreAverage(
+    bootcampId: string,
+    token: string,
+  ): Promise<BootcampEntity> {
     try {
       const response = await this.httpService
         .post(
           `${this.environmentConfigService.BOOTCAMP_SERVICE_URL}/score/recalculate/${bootcampId}`,
+          {},
+          {
+            headers: {
+              Authorization: token,
+            },
+          },
         )
         .toPromise();
       return response.data;

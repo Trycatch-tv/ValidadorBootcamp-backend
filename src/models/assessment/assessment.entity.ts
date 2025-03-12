@@ -15,7 +15,7 @@ export class AssessmentEntity {
   }
 
   @Column({ primary: true, nullable: false })
-  id: string;
+  id?: string;
 
   @Column({ nullable: false })
   bootcamp_id: string;
@@ -24,20 +24,20 @@ export class AssessmentEntity {
   category_id: number;
 
   @Column({ nullable: false })
-  criteria_id: number;
+  criteria_id: string;
 
   @Column({ nullable: false })
   weight: number;
 
   @Column({ nullable: false, default: true })
-  is_active: boolean;
+  is_active?: boolean;
 
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     name: 'created_at',
   })
-  created_at: Date;
+  created_at?: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
@@ -45,5 +45,5 @@ export class AssessmentEntity {
     onUpdate: 'CURRENT_TIMESTAMP',
     name: 'updated_at',
   })
-  updated_at: Date;
+  updated_at?: Date;
 }

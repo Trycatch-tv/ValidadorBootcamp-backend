@@ -74,18 +74,24 @@ export class AssessmentsService {
     assessments: Partial<AssessmentEntity>[],
   ): Promise<boolean> {
     try {
-      // Recorrer los assessments y actualizarlos
-      assessments.forEach(async (assessment) => {
-        await this.assessmentsRepository.update(
-          {
-            bootcamp_id: bootcampId,
-            criteria_id: assessment.criteria_id,
-            category_id: assessment.category_id,
-          },
-          assessment,
+      const getBootcampAssessments =
+        await this.getAssessmentByBootcampId(bootcampId);
+      // actualizar el weight de los assessments en el getBootcampAssessments
+      const assessmentsUpdated = getBootcampAssessments.map((assessment) => {
+        const updatedAssessment = assessments.find(
+          (updatedAssessment) =>
+            updatedAssessment.criteria_id === assessment.criteria_id,
         );
+        if (updatedAssessment) {
+          assessment.weight = updatedAssessment.weight;
+        }
+        return assessment;
       });
-      // Devolver la confirmaicón de que los criterios fueron actualizados
+
+      // actualizar los assessments
+      await this.assessmentsRepository.save(assessmentsUpdated);
+
+      // Confirmación de que los criterios fueron actualizados o insertados
       return true;
     } catch (error) {
       return false;
