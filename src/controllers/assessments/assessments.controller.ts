@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { boolean } from 'joi';
 import { BootcampsClient } from 'src/clients/bottcamps/bootcamps.client';
 import { Roles } from 'src/decorators/user/roles.decorator';
@@ -100,9 +100,9 @@ export class AssessmentsController {
     }
   }
 
-  // @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(AuthGuard, RoleGuard)
   @Roles(Role.Admin)
-  // @ApiBearerAuth()
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'Get assessments by bootcamp id',

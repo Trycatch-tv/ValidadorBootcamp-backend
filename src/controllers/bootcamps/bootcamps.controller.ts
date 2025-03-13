@@ -16,7 +16,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { AssessmentsClient } from 'src/clients/assessments/assessments.client';
@@ -366,8 +372,8 @@ export class BootcampsController {
     description: 'Returns bootcamp score average by id',
     type: Number,
   })
-  // @UseGuards(AuthGuard, RoleGuard)
-  // @ApiBearerAuth()
+  @UseGuards(AuthGuard, RoleGuard)
+  @ApiBearerAuth()
   @Get('score/:id')
   async getScoreAverage(
     @Param('id', ParseUUIDPipe) id: string,
@@ -392,9 +398,9 @@ export class BootcampsController {
     }
   }
 
-  // @UseGuards(AuthGuard, RoleGuard)
-  // @Roles(Role.Admin)
-  // @ApiBearerAuth()
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles(Role.Admin)
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'Returns bootcamp score average by id',
