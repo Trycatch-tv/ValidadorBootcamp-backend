@@ -17,15 +17,10 @@ export class BootcampsService {
 
   async findAll(): Promise<BootcampEntity[]> {
     try {
-      const bootcamps = (
-        await this.bootcampRepository.find({
-          where: { is_active: true },
-        })
-      ).map((bootcamp) => {
-        return bootcamp;
+      return await this.bootcampRepository.find({
+        where: { is_active: true },
+        order: { score: 'DESC' },
       });
-
-      return bootcamps;
     } catch (error) {
       throw error;
     }
