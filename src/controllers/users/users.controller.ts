@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/decorators/user/roles.decorator';
 import { CreateUserDto } from 'src/dtos/users/createuser.dto';
+import { RefreshTokenDto } from 'src/dtos/users/refreshtoken.dto';
 import { SigninDto } from 'src/dtos/users/signin.dto';
 import { SignupDto } from 'src/dtos/users/signup.dto';
 import { UpdateUserDto } from 'src/dtos/users/updateuser.dto';
@@ -28,6 +29,7 @@ import { SigninResponse } from 'src/responses/users/signin.response';
 import { SignupResponse } from 'src/responses/users/signup.response';
 import { UpdateOneUserResponse } from 'src/responses/users/updateOneUser.reposnse';
 import { UsersService } from 'src/services/users/users.service';
+import { compareHash, generateHash } from 'src/utils/crypto/crypto.utils';
 
 @ApiTags('Users')
 @Controller('users')
@@ -162,19 +164,90 @@ export class UsersController {
   })
   @Post('signin')
   async signIn(@Body() signinDto: SigninDto): Promise<SigninResponse> {
-    let signInServiceResponse = await this.usersService.signin(signinDto);
+    const signInServiceResponse = await this.usersService.signin(signinDto);
     const payload = {
       sub: signInServiceResponse.id,
       username: signInServiceResponse.email,
       role: signInServiceResponse.role,
     };
-    signInServiceResponse.token = await this.jwtService.signAsync(payload);
-    let signInResponse = new SigninResponse();
+    signInServiceResponse.token = await this.jwtService.signAsync(payload, {
+      expiresIn: '1h',
+    });
+
+    signInServiceResponse.refreshToken = await this.jwtService.signAsync(
+      payload,
+      {
+        expiresIn: '7d',
+      },
+    );
+
+    // Hash the refresh token
+    const hashedRefreshToken = await generateHash(
+      signInServiceResponse.refreshToken,
+    );
+    // Update the refresh token in the database
+    await this.usersService.updateRefreshToken(
+      signInServiceResponse.id,
+      hashedRefreshToken,
+    );
+
+    const signInResponse = new SigninResponse();
     signInResponse.id = signInServiceResponse.id;
     signInResponse.email = signInServiceResponse.email;
     signInResponse.role = signInServiceResponse.role;
     signInResponse.isLogedIn = signInServiceResponse.isLogedIn;
     signInResponse.token = signInServiceResponse.token;
+    signInResponse.refreshToken = signInServiceResponse.refreshToken;
     return signInResponse;
+  }
+
+  @ApiBody({ type: RefreshTokenDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Refresh token',
+    type: String,
+  })
+  @Post('refresh-token')
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    if (!refreshTokenDto.refreshToken) {
+      return 'Refresh token is required';
+    }
+
+    const { isValid, user } = await this.validateRefreshToken(
+      refreshTokenDto.refreshToken,
+    );
+
+    if (!isValid || !user) {
+      return 'Invalid refresh token';
+    }
+
+    const newPayload = {
+      sub: user.id,
+      username: user.email,
+      role: user.role,
+    };
+    const newToken = await this.jwtService.signAsync(newPayload, {
+      expiresIn: '1h',
+    });
+
+    return { newToken };
+  }
+
+  async validateRefreshToken(refreshToken: string) {
+    try {
+      // Verificar si el refresh token es válido
+      const payload = this.jwtService.verify(refreshToken);
+      const user = await this.findOne(payload.sub);
+
+      if (!user || !user.refresh_token) return null;
+
+      // Comparar el token almacenado en la BD con el recibido
+      const isValid = await compareHash(refreshToken, user.refresh_token);
+      if (!isValid) return null;
+
+      return { isValid, user };
+    } catch (error) {
+      return null;
+    }
   }
 }

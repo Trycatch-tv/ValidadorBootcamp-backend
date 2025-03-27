@@ -1,4 +1,3 @@
-// import { passwordHelper } from './../../utils/crypto/crypto.utils';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/models/user/user.entity';
@@ -10,7 +9,6 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    // private jwtService: JwtService,
   ) {}
 
   async findAll(): Promise<UserEntity[]> {
@@ -119,6 +117,21 @@ export class UsersService {
       return newUser;
     } catch (error) {
       throw Error('Error al iniciar sesión');
+    }
+  }
+
+  async updateRefreshToken(
+    id: string,
+    refreshToken: string,
+  ): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOneOrFail({
+        where: { id, is_active: true },
+      });
+      user.refresh_token = refreshToken;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
     }
   }
 }

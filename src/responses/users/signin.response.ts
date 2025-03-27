@@ -17,4 +17,9 @@ export class SigninResponse {
     description: 'JWT Token',
   })
   token: string;
+  @ApiProperty({
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+    description: 'Refresh JWT Token',
+  })
+  refreshToken: string;
 }
