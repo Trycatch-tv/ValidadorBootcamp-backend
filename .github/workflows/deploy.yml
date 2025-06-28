@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -21,6 +22,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -48,17 +50,14 @@ jobs:
           SSHPASS: ${{ secrets.EC2_KEY }}
         run: |
           sshpass -e ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'            
-            # Clonar el repositorio en una ruta específica
             git clone https://github.com/Trycatch-tv/ValidadorBootcamp-backend /home/${{ secrets.EC2_USER }}/app            
-            
             cd /home/${{ secrets.EC2_USER }}/app
 
             export AWS_REGION=${{ secrets.AWS_REGION }}
             export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
 
-            # Iniciar sesión en Amazon ECR
             aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-            # Crear un archivo .env con las variables de entorno necesarias
+
             echo "DATABASE_HOST=${{secrets.DATABASE_NAME}}" > .env
             echo "DATABASE_PORT=${{secrets.DATABASE_PORT}}" >> .env
             echo "DATABASE_USER=${{secrets.DATABASE_USER}}" >> .env
@@ -72,11 +71,9 @@ jobs:
             echo "POSTGRES_DB=${{secrets.POSTGRES_DB}}" >> .env            
             echo "AWS_ACCOUNT_ID=${{secrets.AWS_ACCOUNT_ID}}" >> .env            
             echo "AWS_REGION=${{secrets.AWS_REGION}}" >> .env
-            # Hacer pull de los cambios en la imagen docker
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/glasscamp-backend:latest
 
-            # Actualizar la imagen del servicio backend y reiniciarlo sin afectar db
-            #docker-compose down 
+            docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/glasscamp-backend:latest
+
             docker-compose up -d --no-deps --build 
             echo "Finalizado!"
           EOF
